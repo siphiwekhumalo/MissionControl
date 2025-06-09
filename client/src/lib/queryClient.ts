@@ -9,7 +9,11 @@ async function throwIfResNotOk(res: Response) {
 
 function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem("token");
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  return token ? { 
+    Authorization: `Bearer ${token}`,
+    'X-Requested-With': 'XMLHttpRequest',
+    'X-Agent-Session': btoa(Date.now().toString())
+  } : {};
 }
 
 export async function apiRequest(
