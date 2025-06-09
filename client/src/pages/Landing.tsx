@@ -35,7 +35,7 @@ export default function Landing() {
             </div>
             
             <h1 className="bond-title text-4xl font-light text-white mb-3">
-              MI6 QUANTUM
+              MissionControl
             </h1>
             <p className="bond-subtitle text-mission-silver text-lg mb-2">
               Classified Operations Network
