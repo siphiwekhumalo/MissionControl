@@ -24,12 +24,18 @@
   --ring: hsl(222, 84%, 4.9%);
   --radius: 0.5rem;
 
-  /* Mission theme colors */
-  --mission-dark: hsl(222, 47%, 11%);
-  --mission-secondary: hsl(215, 25%, 18%);
-  --mission-navy: hsl(222, 47%, 58%);
-  --mission-silver: hsl(215, 20%, 65%);
-  --mission-green: hsl(158, 64%, 52%);
+  /* James Bond Mission theme colors */
+  --mission-black: hsl(0, 0%, 0%);
+  --mission-dark: hsl(210, 20%, 6%);
+  --mission-secondary: hsl(210, 15%, 12%);
+  --mission-surface: hsl(210, 12%, 16%);
+  --mission-border: hsl(210, 20%, 20%);
+  --mission-navy: hsl(220, 70%, 55%);
+  --mission-silver: hsl(210, 15%, 70%);
+  --mission-green: hsl(150, 100%, 40%);
+  --mission-gold: hsl(45, 100%, 50%);
+  --mission-red: hsl(0, 100%, 60%);
+  --mission-blue: hsl(200, 100%, 50%);
   --mission-success: hsl(160, 84%, 39%);
 }
 
@@ -61,71 +67,140 @@
   }
 
   body {
-    @apply font-sans antialiased bg-mission-dark text-slate-50;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    @apply font-sans antialiased bg-mission-black text-slate-50;
+    font-family: 'SF Pro Display', 'Helvetica Neue', 'Arial', sans-serif;
+    background: linear-gradient(135deg, var(--mission-black) 0%, var(--mission-dark) 100%);
+    overflow-x: hidden;
   }
 
-  .mission-dark {
-    background-color: var(--mission-dark);
+  /* James Bond luxury typography */
+  .bond-title {
+    font-family: 'SF Pro Display', 'Helvetica Neue', serif;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
   }
 
-  .mission-secondary {
-    background-color: var(--mission-secondary);
+  .bond-subtitle {
+    font-family: 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.02em;
   }
 
-  .mission-navy {
-    color: var(--mission-navy);
+  /* Glowing effects */
+  .glow-green {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), 0 0 40px rgba(0, 255, 136, 0.1);
   }
 
-  .mission-silver {
-    color: var(--mission-silver);
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), 0 0 40px rgba(255, 215, 0, 0.1);
   }
 
-  .mission-green {
-    color: var(--mission-green);
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(0, 162, 255, 0.3), 0 0 40px rgba(0, 162, 255, 0.1);
   }
 
-  .bg-mission-dark {
-    background-color: var(--mission-dark);
+  /* Animated gradient border */
+  .gradient-border {
+    position: relative;
+    background: var(--mission-secondary);
+    border: 1px solid transparent;
   }
 
-  .bg-mission-secondary {
-    background-color: var(--mission-secondary);
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: linear-gradient(45deg, var(--mission-green), var(--mission-gold), var(--mission-blue), var(--mission-green));
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    animation: rotate 4s linear infinite;
   }
 
-  .bg-mission-navy {
-    background-color: var(--mission-navy);
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 
-  .bg-mission-green {
-    background-color: var(--mission-green);
+  /* Pulse animation */
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite alternate;
   }
 
-  .text-mission-green {
-    color: var(--mission-green);
+  @keyframes pulseGlow {
+    from {
+      box-shadow: 0 0 5px rgba(0, 255, 136, 0.4);
+    }
+    to {
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.8), 0 0 40px rgba(0, 255, 136, 0.4);
+    }
   }
 
-  .text-mission-navy {
-    color: var(--mission-navy);
+  /* Scan line animation */
+  .scan-lines::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--mission-green), transparent);
+    animation: scanLine 3s linear infinite;
+    z-index: 1;
   }
 
-  .text-mission-silver {
-    color: var(--mission-silver);
+  @keyframes scanLine {
+    0% { transform: translateY(-2px); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
   }
 
-  .border-mission-green {
-    border-color: var(--mission-green);
+  /* Hexagon pattern overlay */
+  .hexagon-pattern {
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(0, 255, 136, 0.1) 2px, transparent 2px),
+      radial-gradient(circle at 75% 75%, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
   }
 
-  .border-mission-navy {
-    border-color: var(--mission-navy);
+  /* Mission color utilities */
+  .bg-mission-black { background-color: var(--mission-black); }
+  .bg-mission-dark { background-color: var(--mission-dark); }
+  .bg-mission-secondary { background-color: var(--mission-secondary); }
+  .bg-mission-surface { background-color: var(--mission-surface); }
+  .bg-mission-navy { background-color: var(--mission-navy); }
+  .bg-mission-green { background-color: var(--mission-green); }
+  .bg-mission-gold { background-color: var(--mission-gold); }
+  .bg-mission-blue { background-color: var(--mission-blue); }
+
+  .text-mission-silver { color: var(--mission-silver); }
+  .text-mission-green { color: var(--mission-green); }
+  .text-mission-gold { color: var(--mission-gold); }
+  .text-mission-navy { color: var(--mission-navy); }
+  .text-mission-blue { color: var(--mission-blue); }
+
+  .border-mission-green { border-color: var(--mission-green); }
+  .border-mission-gold { border-color: var(--mission-gold); }
+  .border-mission-navy { border-color: var(--mission-navy); }
+  .border-mission-surface { border-color: var(--mission-surface); }
+
+  .hover\:bg-mission-green:hover { background-color: var(--mission-green); }
+  .hover\:bg-mission-gold:hover { background-color: var(--mission-gold); }
+  .hover\:bg-mission-navy:hover { background-color: var(--mission-navy); }
+
+  /* Glass morphism effect */
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .hover\:bg-mission-green:hover {
-    background-color: var(--mission-green);
-  }
-
-  .hover\:bg-mission-navy:hover {
-    background-color: var(--mission-navy);
+  /* Elegant transitions */
+  .transition-all-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
