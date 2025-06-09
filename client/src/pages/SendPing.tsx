@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useJWTAuth } from "@/hooks/useJWTAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -24,7 +24,7 @@ interface Ping {
 
 export default function SendPing() {
   const { toast } = useToast();
-  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, user } = useJWTAuth();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
