@@ -133,6 +133,10 @@
   }
 
   /* Scan line animation */
+  .scan-lines {
+    position: relative;
+  }
+  
   .scan-lines::before {
     content: '';
     position: absolute;

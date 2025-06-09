@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import ThreeBackground from "@/components/ThreeBackground";
+import ThreeBackgroundSimple from "@/components/ThreeBackgroundSimple";
 import { useLocation } from "wouter";
 
 export default function Landing() {
@@ -13,7 +13,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-mission-black relative overflow-hidden">
       {/* Three.js Background Animation */}
-      <ThreeBackground scene="particles" className="z-0" />
+      <ThreeBackgroundSimple scene="particles" className="z-0" />
       
       {/* Hexagon overlay pattern */}
       <div className="absolute inset-0 hexagon-pattern opacity-30 z-10 pointer-events-none"></div>
