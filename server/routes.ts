@@ -128,6 +128,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/pings', authenticate, async (req: AuthRequest, res) => {
     try {
+      res.set('Cache-Control', 'public, max-age=60'); // Cache for 1 minute
       const pings = await storage.getUserPings(req.userId!);
       res.json(pings);
     } catch (error) {

@@ -9,7 +9,17 @@
       "lastName": "User",
       "createdAt": "2025-06-09T19:51:00.187Z",
       "updatedAt": "2025-06-09T19:51:00.187Z"
+    },
+    {
+      "id": 2,
+      "username": "siphiwe.khumalo",
+      "email": "siphiwekhumalo006@gmail.com",
+      "password": "$2b$10$YvYYqxqUAoVrZ6VrvceqY.hOn2/09p4n/8SlJzmuJ0fjHiBChA59y",
+      "firstName": "Siphiwe",
+      "lastName": "Khumalo",
+      "createdAt": "2025-06-09T19:53:32.808Z",
+      "updatedAt": "2025-06-09T19:53:32.808Z"
     }
   ],
-  "nextUserId": 2
+  "nextUserId": 3
 }

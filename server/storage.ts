@@ -45,6 +45,7 @@ export class MemStorage implements IStorage {
   private pings: Map<number, Ping> = new Map();
   private nextUserId = 1;
   private nextPingId = 1;
+  private userPingsCache: Map<number, Ping[]> = new Map();
 
   constructor() {
     this.loadData();
@@ -82,22 +83,38 @@ export class MemStorage implements IStorage {
     }
   }
 
-  private saveData() {
+  private saveDataDebounced = this.debounce(() => {
     try {
       const usersData = {
         users: Array.from(this.users.values()),
         nextUserId: this.nextUserId,
       };
-      writeFileSync(USERS_FILE, JSON.stringify(usersData, null, 2));
+      writeFileSync(USERS_FILE, JSON.stringify(usersData));
 
       const pingsData = {
         pings: Array.from(this.pings.values()),
         nextPingId: this.nextPingId,
       };
-      writeFileSync(PINGS_FILE, JSON.stringify(pingsData, null, 2));
+      writeFileSync(PINGS_FILE, JSON.stringify(pingsData));
     } catch (error) {
       console.error('Failed to save data:', error);
     }
+  }, 1000);
+
+  private saveData() {
+    this.saveDataDebounced();
+  }
+
+  private debounce(func: Function, wait: number) {
+    let timeout: NodeJS.Timeout;
+    return function executedFunction(...args: any[]) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
   }
 
   // User operations for JWT auth
@@ -139,15 +156,19 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
     };
     this.pings.set(ping.id, ping);
+    this.userPingsCache.delete(pingData.userId); // Invalidate cache
     this.saveData();
     return ping;
   }
 
   async getUserPings(userId: number): Promise<Ping[]> {
-    const userPings = Array.from(this.pings.values())
-      .filter(ping => ping.userId === userId)
-      .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
-    return userPings;
+    if (!this.userPingsCache.has(userId)) {
+      const userPings = Array.from(this.pings.values())
+        .filter(ping => ping.userId === userId)
+        .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+      this.userPingsCache.set(userId, userPings);
+    }
+    return this.userPingsCache.get(userId)!;
   }
 
   async getLatestUserPings(userId: number, limit: number): Promise<Ping[]> {
