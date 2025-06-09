@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import AppHeader from "@/components/AppHeader";
+import ThreeBackground from "@/components/ThreeBackground";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -158,54 +159,75 @@ export default function SendPing() {
   }
 
   return (
-    <div className="min-h-screen bg-mission-dark text-slate-50">
+    <div className="min-h-screen bg-mission-black relative overflow-hidden">
+      {/* Three.js Background Animation */}
+      <ThreeBackground scene="matrix" className="z-0" />
+      
+      {/* Hexagon overlay pattern */}
+      <div className="absolute inset-0 hexagon-pattern opacity-20 z-10"></div>
+      
       <AppHeader />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-slate-50 mb-2">Send Ping Transmission</h2>
-          <p className="text-slate-400">Create a new secure transmission with coordinates</p>
+          <h2 className="bond-title text-4xl font-light text-white mb-3">Transmission Protocol</h2>
+          <p className="bond-subtitle text-mission-silver text-lg">Secure coordinate broadcasting system</p>
+          <div className="w-32 h-px bg-gradient-to-r from-transparent via-mission-green to-transparent mt-4"></div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-mission-secondary rounded-lg p-6 border border-slate-700">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Ping Type Selection */}
+            <div className="glass gradient-border rounded-2xl p-8">
+              <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Transmission Type Selection */}
                 <div>
-                  <Label className="text-sm font-medium text-slate-300 mb-3 block">Transmission Type</Label>
+                  <Label className="bond-subtitle text-base font-medium text-white mb-4 block">Transmission Protocol</Label>
                   <RadioGroup value={pingType} onValueChange={(value: "new" | "response") => setPingType(value)}>
-                    <div className="grid grid-cols-2 gap-4">
-                      <Label className="relative">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Label className="relative group cursor-pointer">
                         <RadioGroupItem value="new" className="sr-only" />
-                        <div className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${
+                        <div className={`glass gradient-border rounded-xl p-6 transition-all-smooth hover:scale-[1.02] ${
                           pingType === "new" 
-                            ? "border-mission-green bg-mission-green/10" 
-                            : "border-slate-600"
+                            ? "glow-green bg-mission-green/10" 
+                            : "hover:bg-mission-surface/30"
                         }`}>
-                          <div className="flex items-center space-x-3">
-                            <i className="fas fa-plus-circle text-mission-green"></i>
-                            <div>
-                              <p className="font-medium text-slate-50">New Trail</p>
-                              <p className="text-sm text-slate-400">Start a new ping trail</p>
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-mission-green/20 to-mission-blue/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                              <svg className="w-6 h-6 text-mission-green" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                              </svg>
                             </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-white mb-1">New Transmission</p>
+                              <p className="text-sm text-mission-silver">Initialize new coordinate trail</p>
+                            </div>
+                            {pingType === "new" && (
+                              <div className="w-2 h-2 bg-mission-green rounded-full pulse-glow"></div>
+                            )}
                           </div>
                         </div>
                       </Label>
                       
-                      <Label className="relative">
+                      <Label className="relative group cursor-pointer">
                         <RadioGroupItem value="response" className="sr-only" />
-                        <div className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${
+                        <div className={`glass gradient-border rounded-xl p-6 transition-all-smooth hover:scale-[1.02] ${
                           pingType === "response" 
-                            ? "border-mission-green bg-mission-green/10" 
-                            : "border-slate-600"
+                            ? "glow-blue bg-mission-blue/10" 
+                            : "hover:bg-mission-surface/30"
                         }`}>
-                          <div className="flex items-center space-x-3">
-                            <i className="fas fa-reply text-mission-green"></i>
-                            <div>
-                              <p className="font-medium text-slate-50">Response</p>
-                              <p className="text-sm text-slate-400">Reply to existing ping</p>
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-mission-blue/20 to-mission-gold/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                              <svg className="w-6 h-6 text-mission-blue" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>
+                              </svg>
                             </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-white mb-1">Response Protocol</p>
+                              <p className="text-sm text-mission-silver">Reply to existing transmission</p>
+                            </div>
+                            {pingType === "response" && (
+                              <div className="w-2 h-2 bg-mission-blue rounded-full pulse-glow"></div>
+                            )}
                           </div>
                         </div>
                       </Label>

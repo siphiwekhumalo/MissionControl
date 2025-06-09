@@ -273,43 +273,85 @@ export default function Dashboard() {
           </div>
           
           <div className="space-y-6">
-            {/* Quick Send Ping */}
-            <div className="bg-mission-secondary rounded-lg p-6 border border-slate-700">
-              <h3 className="text-lg font-semibold text-slate-50 mb-4">Quick Actions</h3>
-              <div className="space-y-3">
+            {/* Mission Control Panel */}
+            <div className="glass gradient-border rounded-2xl p-6">
+              <div className="mb-6">
+                <h3 className="bond-title text-lg font-light text-white mb-1">Mission Control</h3>
+                <p className="bond-subtitle text-mission-silver text-sm">Tactical operations</p>
+              </div>
+              <div className="space-y-4">
                 <Link href="/send-ping">
-                  <Button className="w-full bg-mission-green hover:bg-emerald-600 text-white font-medium py-3 px-4">
-                    <i className="fas fa-paper-plane mr-2"></i>
-                    Send New Ping
+                  <Button className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group">
+                    <div className="flex items-center justify-center space-x-3">
+                      <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                      </svg>
+                      <span>Initiate Transmission</span>
+                    </div>
                   </Button>
                 </Link>
                 <Link href="/all-pings">
-                  <Button className="w-full bg-mission-navy hover:bg-blue-600 text-white font-medium py-3 px-4">
-                    <i className="fas fa-list mr-2"></i>
-                    View All Pings
+                  <Button className="w-full bg-mission-surface/50 hover:bg-mission-surface border border-mission-surface hover:border-mission-gold text-mission-silver hover:text-white font-medium py-3 px-6 rounded-xl transition-all-smooth">
+                    <div className="flex items-center justify-center space-x-3">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+                      </svg>
+                      <span>Access Archive</span>
+                    </div>
                   </Button>
                 </Link>
               </div>
             </div>
             
-            {/* Mission Status */}
-            <div className="bg-mission-secondary rounded-lg p-6 border border-slate-700">
-              <h3 className="text-lg font-semibold text-slate-50 mb-4">Mission Status</h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Security Level</span>
-                  <span className="text-mission-green font-medium">CLASSIFIED</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Connection</span>
+            {/* System Status */}
+            <div className="glass gradient-border rounded-2xl p-6">
+              <div className="mb-6">
+                <h3 className="bond-title text-lg font-light text-white mb-1">System Status</h3>
+                <p className="bond-subtitle text-mission-silver text-sm">Network diagnostics</p>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-mission-green rounded-full pulse-glow"></div>
+                    <span className="text-mission-silver">Security Level</span>
+                  </div>
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-mission-green rounded-full animate-pulse"></div>
-                    <span className="text-mission-green font-medium">SECURE</span>
+                    <span className="text-mission-green font-medium text-sm">LEVEL 9</span>
+                    <svg className="w-4 h-4 text-mission-green" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                    </svg>
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Last Sync</span>
-                  <span className="text-slate-300">Just now</span>
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-mission-blue rounded-full pulse-glow"></div>
+                    <span className="text-mission-silver">Network</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-mission-blue font-medium text-sm">QUANTUM</span>
+                    <svg className="w-4 h-4 text-mission-blue" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.07 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-mission-gold rounded-full pulse-glow"></div>
+                    <span className="text-mission-silver">Encryption</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-mission-gold font-medium text-sm">AES-256</span>
+                    <svg className="w-4 h-4 text-mission-gold" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between py-2 border-t border-mission-surface/30 pt-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-mission-green rounded-full pulse-glow"></div>
+                    <span className="text-mission-silver">Last Sync</span>
+                  </div>
+                  <span className="text-white font-medium text-sm">Live</span>
                 </div>
               </div>
             </div>
