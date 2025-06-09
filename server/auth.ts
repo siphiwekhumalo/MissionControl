@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { Request, Response, NextFunction } from "express";
 import { storage } from "./storage";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET || "mission-control-secret-key-2024";
 const JWT_EXPIRES_IN = "7d";
 
 export interface AuthRequest extends Request {
