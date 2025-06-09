@@ -183,15 +183,12 @@ export default function Dashboard() {
                     <p className="bond-subtitle text-mission-silver text-sm">Recent transmission activity</p>
                   </div>
                   <Link href="/all-pings" className="inline-block">
-                    <Button 
-                      variant="ghost" 
-                      className="group flex items-center space-x-2 px-4 py-2 bg-mission-green/20 hover:bg-mission-green/30 text-mission-green rounded-lg transition-all-smooth glow-green border-0 cursor-pointer"
-                    >
+                    <button className="group flex items-center space-x-2 px-4 py-2 bg-mission-green/20 hover:bg-mission-green/30 text-mission-green rounded-lg transition-all-smooth glow-green cursor-pointer">
                       <span className="text-sm font-medium">View Archive</span>
                       <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
                       </svg>
-                    </Button>
+                    </button>
                   </Link>
                 </div>
               </div>
@@ -252,17 +249,16 @@ export default function Dashboard() {
                               )}
                             </div>
                           </div>
-                          <Link href={`/send-ping?parent=${ping.id}`}>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="p-2 text-mission-silver/60 hover:text-mission-green transition-colors opacity-0 group-hover:opacity-100 rounded-lg hover:bg-mission-surface/50"
+                          <Link href={`/send-ping?parent=${ping.id}`} className="inline-block">
+                            <button 
+                              className="p-2 text-mission-silver/60 hover:text-mission-green transition-colors opacity-0 group-hover:opacity-100 rounded-lg hover:bg-mission-surface/50 cursor-pointer"
                               title={`Respond to transmission #${ping.id}`}
+                              type="button"
                             >
                               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
                               </svg>
-                            </Button>
+                            </button>
                           </Link>
                         </div>
                       </div>
@@ -279,10 +275,10 @@ export default function Dashboard() {
                     </div>
                     <h4 className="text-lg font-medium text-white mb-2">No Intelligence Yet</h4>
                     <p className="text-mission-silver text-sm mb-4">Begin your first transmission to establish communication</p>
-                    <Link href="/send-ping">
-                      <Button className="bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium px-6 py-2 rounded-lg transition-all-smooth">
+                    <Link href="/send-ping" className="inline-block">
+                      <button className="bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium px-6 py-2 rounded-lg transition-all-smooth cursor-pointer">
                         Initialize Transmission
-                      </Button>
+                      </button>
                     </Link>
                   </div>
                 )}
@@ -299,24 +295,24 @@ export default function Dashboard() {
               </div>
               <div className="space-y-4">
                 <Link href="/send-ping" className="block w-full">
-                  <Button className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group cursor-pointer">
+                  <button className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group cursor-pointer">
                     <div className="flex items-center justify-center space-x-3">
                       <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                       </svg>
                       <span>Initiate Transmission</span>
                     </div>
-                  </Button>
+                  </button>
                 </Link>
                 <Link href="/all-pings" className="block w-full">
-                  <Button className="w-full bg-mission-surface/50 hover:bg-mission-surface border border-mission-surface hover:border-mission-gold text-mission-silver hover:text-white font-medium py-3 px-6 rounded-xl transition-all-smooth cursor-pointer">
+                  <button className="w-full bg-mission-surface/50 hover:bg-mission-surface border border-mission-surface hover:border-mission-gold text-mission-silver hover:text-white font-medium py-3 px-6 rounded-xl transition-all-smooth cursor-pointer">
                     <div className="flex items-center justify-center space-x-3">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
                       </svg>
                       <span>Access Archive</span>
                     </div>
-                  </Button>
+                  </button>
                 </Link>
               </div>
             </div>
