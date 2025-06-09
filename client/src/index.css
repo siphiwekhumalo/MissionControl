@@ -100,7 +100,7 @@
     box-shadow: 0 0 20px rgba(0, 162, 255, 0.3), 0 0 40px rgba(0, 162, 255, 0.1);
   }
 
-  /* Animated gradient border */
+  /* Static gradient border */
   .gradient-border {
     position: relative;
     background: var(--mission-secondary);
@@ -116,12 +116,6 @@
     border-radius: inherit;
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: xor;
-    animation: rotate 4s linear infinite;
-  }
-
-  @keyframes rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
   }
 
   /* Pulse animation */

@@ -97,7 +97,7 @@ export default function Dashboard() {
       
       <main className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="bond-title text-4xl font-light text-white mb-3">Command Center</h2>
+          <h2 className="bond-title text-4xl font-light text-white mb-3">Dashboard</h2>
           <p className="bond-subtitle text-mission-silver text-lg">Mission Intelligence & Transmission Status</p>
           <div className="w-32 h-px bg-gradient-to-r from-transparent via-mission-green to-transparent mt-4"></div>
         </div>

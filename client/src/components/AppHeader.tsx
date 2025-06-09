@@ -18,9 +18,9 @@ export default function AppHeader() {
   };
 
   const navItems = [
-    { path: "/", label: "Command Center", icon: "⚡" },
-    { path: "/send-ping", label: "Transmit", icon: "📡" },
-    { path: "/all-pings", label: "Intel Archive", icon: "📊" },
+    { path: "/", label: "Dashboard", icon: "⚡" },
+    { path: "/send-ping", label: "Send Ping", icon: "📡" },
+    { path: "/all-pings", label: "All Pings", icon: "📊" },
   ];
 
   return (
