@@ -202,24 +202,27 @@ function animateRadar(scene: THREE.Scene) {
 
 // Matrix rain effect
 function setupMatrixRain(scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
-  const columns = 50;
-  const dropSpeed = 0.5;
+  const columns = 80; // More columns for fuller screen
+  const dropSpeed = 0.03; // Much slower speed like particle animation
   
   for (let i = 0; i < columns; i++) {
     const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(30 * 3); // 30 drops per column
+    const positions = new Float32Array(50 * 3); // More drops per column
     const drops = [];
     
-    for (let j = 0; j < 30; j++) {
-      const x = (i - columns / 2) * 2;
-      const y = Math.random() * 100 - 50;
-      const z = 0;
+    for (let j = 0; j < 50; j++) {
+      const x = (i - columns / 2) * 1.5; // Tighter spacing
+      const y = Math.random() * 150 - 75; // Taller screen coverage
+      const z = Math.random() * 20 - 10; // Add depth variation
       
       positions[j * 3] = x;
       positions[j * 3 + 1] = y;
       positions[j * 3 + 2] = z;
       
-      drops.push({ speed: Math.random() * dropSpeed + 0.1 });
+      drops.push({ 
+        speed: Math.random() * dropSpeed + 0.01, // Much slower base speed
+        opacity: Math.random() * 0.8 + 0.2 // Varying opacity
+      });
     }
     
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -227,16 +230,16 @@ function setupMatrixRain(scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
     
     const material = new THREE.PointsMaterial({
       color: 0x00ff88,
-      size: 1,
+      size: Math.random() * 1.5 + 0.5, // Varying sizes
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.6, // Slightly more subtle
     });
     
     const points = new THREE.Points(geometry, material);
     scene.add(points);
   }
   
-  camera.position.z = 50;
+  camera.position.z = 60; // Pull back camera for wider view
 }
 
 function animateMatrix(scene: THREE.Scene) {
@@ -248,12 +251,17 @@ function animateMatrix(scene: THREE.Scene) {
       for (let i = 0; i < positions.length; i += 3) {
         positions[i + 1] -= drops[i / 3].speed;
         
-        if (positions[i + 1] < -50) {
-          positions[i + 1] = 50;
+        // Reset when drops fall off screen (expanded range)
+        if (positions[i + 1] < -75) {
+          positions[i + 1] = 75 + Math.random() * 20;
+          // Add very subtle horizontal drift
+          positions[i] += (Math.random() - 0.5) * 0.02;
         }
       }
       
       child.geometry.attributes.position.needsUpdate = true;
+      // Very slow rotation for subtle depth
+      child.rotation.z += 0.0001;
     }
   });
 }

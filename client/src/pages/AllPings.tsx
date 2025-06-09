@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import AppHeader from "@/components/AppHeader";
+import ThreeBackground from "@/components/ThreeBackground";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -91,36 +92,45 @@ export default function AllPings() {
   }
 
   return (
-    <div className="min-h-screen bg-mission-dark text-slate-50">
+    <div className="min-h-screen bg-mission-black relative overflow-hidden">
+      {/* Three.js Background Animation */}
+      <ThreeBackground scene="particles" className="z-0" />
+      
+      {/* Hexagon overlay pattern */}
+      <div className="absolute inset-0 hexagon-pattern opacity-20 z-10"></div>
+      
       <AppHeader />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-slate-50 mb-2">All Transmissions</h2>
-          <p className="text-slate-400">Complete history of your ping transmissions and trails</p>
+          <h2 className="bond-title text-4xl font-light text-white mb-3">All Pings</h2>
+          <p className="bond-subtitle text-mission-silver text-lg">Complete history of your ping transmissions and trails</p>
+          <div className="w-32 h-px bg-gradient-to-r from-transparent via-mission-green to-transparent mt-4"></div>
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-mission-secondary rounded-lg p-6 border border-slate-700 mb-6">
+        <div className="glass gradient-border rounded-2xl p-6 mb-6">
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
             <div className="flex-1">
               <div className="relative">
-                <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                <svg className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-mission-silver/60" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
                 <Input
                   type="text"
                   placeholder="Search transmissions..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-mission-dark border-slate-600 pl-10 text-slate-50 placeholder-slate-500 focus:border-mission-green"
+                  className="w-full bg-mission-surface/50 border-mission-surface hover:border-mission-green focus:border-mission-green pl-10 text-white placeholder-mission-silver/60 rounded-xl transition-all-smooth"
                 />
               </div>
             </div>
             <div className="flex gap-4">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-mission-dark border-slate-600 text-slate-50">
+                <SelectTrigger className="bg-mission-surface/50 border-mission-surface hover:border-mission-green text-white rounded-xl min-w-[140px]">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-mission-dark border-slate-600">
+                <SelectContent className="bg-mission-dark border-mission-surface rounded-xl">
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="transmitted">Transmitted</SelectItem>
@@ -129,10 +139,10 @@ export default function AllPings() {
               </Select>
               
               <Select value={trailFilter} onValueChange={setTrailFilter}>
-                <SelectTrigger className="bg-mission-dark border-slate-600 text-slate-50">
+                <SelectTrigger className="bg-mission-surface/50 border-mission-surface hover:border-mission-green text-white rounded-xl min-w-[140px]">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-mission-dark border-slate-600">
+                <SelectContent className="bg-mission-dark border-mission-surface rounded-xl">
                   <SelectItem value="all">All Trails</SelectItem>
                   <SelectItem value="new">New Trails Only</SelectItem>
                   <SelectItem value="responses">Responses Only</SelectItem>
@@ -143,20 +153,20 @@ export default function AllPings() {
         </div>
 
         {/* Pings Table */}
-        <div className="bg-mission-secondary rounded-lg border border-slate-700 overflow-hidden">
+        <div className="glass gradient-border rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-mission-dark border-b border-slate-700">
+              <thead className="bg-mission-surface/30 border-b border-mission-surface/50">
                 <tr>
-                  <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">Status</th>
-                  <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">Coordinates</th>
-                  <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">Timestamp</th>
-                  <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">Trail</th>
-                  <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">Parent</th>
-                  <th className="text-left py-4 px-6 text-sm font-medium text-slate-300">Message</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-mission-silver uppercase tracking-wider">Status</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-mission-silver uppercase tracking-wider">Coordinates</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-mission-silver uppercase tracking-wider">Timestamp</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-mission-silver uppercase tracking-wider">Trail ID</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-mission-silver uppercase tracking-wider">Parent</th>
+                  <th className="text-left py-4 px-6 text-sm font-medium text-mission-silver uppercase tracking-wider">Message</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-700">
+              <tbody className="divide-y divide-mission-surface/30">
                 {isLoading ? (
                   <tr>
                     <td colSpan={6} className="p-6">

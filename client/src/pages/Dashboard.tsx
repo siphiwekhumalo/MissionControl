@@ -104,65 +104,71 @@ export default function Dashboard() {
 
         {/* Mission Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="glass gradient-border rounded-2xl p-6 glow-green">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-mission-silver text-sm font-medium mb-1">Total Transmissions</p>
-                <p className="text-3xl font-light text-white">{totalPings}</p>
-                <div className="flex items-center space-x-2 mt-2">
-                  <div className="w-2 h-2 bg-mission-green rounded-full pulse-glow"></div>
-                  <span className="text-xs text-mission-green">OPERATIONAL</span>
+          <Link href="/all-pings">
+            <div className="glass gradient-border rounded-2xl p-6 glow-green hover:bg-mission-surface/30 transition-all-smooth cursor-pointer group">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-mission-silver text-sm font-medium mb-1 group-hover:text-mission-green transition-colors">Total Transmissions</p>
+                  <p className="text-3xl font-light text-white">{totalPings}</p>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <div className="w-2 h-2 bg-mission-green rounded-full pulse-glow"></div>
+                    <span className="text-xs text-mission-green">OPERATIONAL</span>
+                  </div>
                 </div>
-              </div>
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-mission-green/20 to-mission-blue/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                  <svg className="w-6 h-6 text-mission-green" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
-                  </svg>
+                  <div className="w-12 h-12 bg-gradient-to-br from-mission-green/20 to-mission-blue/20 rounded-xl flex items-center justify-center backdrop-blur-sm group-hover:from-mission-green/30 group-hover:to-mission-blue/30 transition-all">
+                    <svg className="w-6 h-6 text-mission-green" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
           
-          <div className="glass gradient-border rounded-2xl p-6 glow-blue">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-mission-silver text-sm font-medium mb-1">Active Trails</p>
-                <p className="text-3xl font-light text-white">{activeTrails}</p>
-                <div className="flex items-center space-x-2 mt-2">
-                  <div className="w-2 h-2 bg-mission-blue rounded-full pulse-glow"></div>
-                  <span className="text-xs text-mission-blue">TRACKING</span>
+          <Link href="/all-pings?filter=trails">
+            <div className="glass gradient-border rounded-2xl p-6 glow-blue hover:bg-mission-surface/30 transition-all-smooth cursor-pointer group">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-mission-silver text-sm font-medium mb-1 group-hover:text-mission-blue transition-colors">Active Trails</p>
+                  <p className="text-3xl font-light text-white">{activeTrails}</p>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <div className="w-2 h-2 bg-mission-blue rounded-full pulse-glow"></div>
+                    <span className="text-xs text-mission-blue">TRACKING</span>
+                  </div>
                 </div>
-              </div>
-              <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-mission-blue/20 to-mission-gold/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                  <svg className="w-6 h-6 text-mission-blue" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 3L5 6.99h3V14h2V6.99h3L9 3zm7 14.01V10h-2v7.01h-3L15 21l4-3.99h-3z"/>
-                  </svg>
+                <div className="relative">
+                  <div className="w-12 h-12 bg-gradient-to-br from-mission-blue/20 to-mission-gold/20 rounded-xl flex items-center justify-center backdrop-blur-sm group-hover:from-mission-blue/30 group-hover:to-mission-gold/30 transition-all">
+                    <svg className="w-6 h-6 text-mission-blue" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 3L5 6.99h3V14h2V6.99h3L9 3zm7 14.01V10h-2v7.01h-3L15 21l4-3.99h-3z"/>
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
           
-          <div className="glass gradient-border rounded-2xl p-6 glow-gold">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-mission-silver text-sm font-medium mb-1">Last Transmission</p>
-                <p className="text-3xl font-light text-white">{lastPing}</p>
-                <div className="flex items-center space-x-2 mt-2">
-                  <div className="w-2 h-2 bg-mission-gold rounded-full pulse-glow"></div>
-                  <span className="text-xs text-mission-gold">SYNCHRONIZED</span>
+          <Link href="/send-ping">
+            <div className="glass gradient-border rounded-2xl p-6 glow-gold hover:bg-mission-surface/30 transition-all-smooth cursor-pointer group">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-mission-silver text-sm font-medium mb-1 group-hover:text-mission-gold transition-colors">Last Transmission</p>
+                  <p className="text-3xl font-light text-white">{lastPing}</p>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <div className="w-2 h-2 bg-mission-gold rounded-full pulse-glow"></div>
+                    <span className="text-xs text-mission-gold">SYNCHRONIZED</span>
+                  </div>
                 </div>
-              </div>
-              <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-mission-gold/20 to-mission-green/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                  <svg className="w-6 h-6 text-mission-gold" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-                  </svg>
+                <div className="relative">
+                  <div className="w-12 h-12 bg-gradient-to-br from-mission-gold/20 to-mission-green/20 rounded-xl flex items-center justify-center backdrop-blur-sm group-hover:from-mission-gold/30 group-hover:to-mission-green/30 transition-all">
+                    <svg className="w-6 h-6 text-mission-gold" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Intelligence Feed and Quick Actions */}
@@ -176,11 +182,16 @@ export default function Dashboard() {
                     <h3 className="bond-title text-xl font-light text-white">Intelligence Feed</h3>
                     <p className="bond-subtitle text-mission-silver text-sm">Recent transmission activity</p>
                   </div>
-                  <Link href="/all-pings" className="group flex items-center space-x-2 px-4 py-2 bg-mission-green/20 hover:bg-mission-green/30 text-mission-green rounded-lg transition-all-smooth glow-green">
-                    <span className="text-sm font-medium">View Archive</span>
-                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                    </svg>
+                  <Link href="/all-pings" className="inline-block">
+                    <Button 
+                      variant="ghost" 
+                      className="group flex items-center space-x-2 px-4 py-2 bg-mission-green/20 hover:bg-mission-green/30 text-mission-green rounded-lg transition-all-smooth glow-green border-0 cursor-pointer"
+                    >
+                      <span className="text-sm font-medium">View Archive</span>
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                      </svg>
+                    </Button>
                   </Link>
                 </div>
               </div>
@@ -241,11 +252,18 @@ export default function Dashboard() {
                               )}
                             </div>
                           </div>
-                          <button className="p-2 text-mission-silver/60 hover:text-mission-green transition-colors opacity-0 group-hover:opacity-100 rounded-lg hover:bg-mission-surface/50">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
-                            </svg>
-                          </button>
+                          <Link href={`/send-ping?parent=${ping.id}`}>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="p-2 text-mission-silver/60 hover:text-mission-green transition-colors opacity-0 group-hover:opacity-100 rounded-lg hover:bg-mission-surface/50"
+                              title={`Respond to transmission #${ping.id}`}
+                            >
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                              </svg>
+                            </Button>
+                          </Link>
                         </div>
                       </div>
                     );
@@ -280,8 +298,8 @@ export default function Dashboard() {
                 <p className="bond-subtitle text-mission-silver text-sm">Tactical operations</p>
               </div>
               <div className="space-y-4">
-                <Link href="/send-ping">
-                  <Button className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group">
+                <Link href="/send-ping" className="block w-full">
+                  <Button className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group cursor-pointer">
                     <div className="flex items-center justify-center space-x-3">
                       <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -290,8 +308,8 @@ export default function Dashboard() {
                     </div>
                   </Button>
                 </Link>
-                <Link href="/all-pings">
-                  <Button className="w-full bg-mission-surface/50 hover:bg-mission-surface border border-mission-surface hover:border-mission-gold text-mission-silver hover:text-white font-medium py-3 px-6 rounded-xl transition-all-smooth">
+                <Link href="/all-pings" className="block w-full">
+                  <Button className="w-full bg-mission-surface/50 hover:bg-mission-surface border border-mission-surface hover:border-mission-gold text-mission-silver hover:text-white font-medium py-3 px-6 rounded-xl transition-all-smooth cursor-pointer">
                     <div className="flex items-center justify-center space-x-3">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>

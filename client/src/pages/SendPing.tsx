@@ -34,6 +34,16 @@ export default function SendPing() {
   const [message, setMessage] = useState("");
   const [parentPingId, setParentPingId] = useState<string>("");
 
+  // Check for parent parameter in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const parentId = urlParams.get('parent');
+    if (parentId) {
+      setPingType("response");
+      setParentPingId(parentId);
+    }
+  }, []);
+
   // Redirect to home if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -177,7 +187,6 @@ export default function SendPing() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="glass gradient-border rounded-2xl p-8">
               <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Transmission Type Selection */}
                 <div>
@@ -266,7 +275,7 @@ export default function SendPing() {
                         <input
                           type="text"
                           value={latitude}
-                          readOnly
+                          onChange={(e) => setLatitude(e.target.value)}
                           className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-slate-200 font-mono text-sm"
                         />
                       </div>
@@ -275,7 +284,7 @@ export default function SendPing() {
                         <input
                           type="text"
                           value={longitude}
-                          readOnly
+                          onChange={(e) => setLongitude(e.target.value)}
                           className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-slate-200 font-mono text-sm"
                         />
                       </div>
@@ -336,7 +345,6 @@ export default function SendPing() {
                   </Button>
                 </div>
               </form>
-            </div>
           </div>
 
           {/* Transmission Preview */}
