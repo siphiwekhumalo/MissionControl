@@ -247,7 +247,7 @@ export default function SendPing() {
                         <SelectValue placeholder="Select a ping..." />
                       </SelectTrigger>
                       <SelectContent className="bg-mission-dark border-slate-600">
-                        {allPings?.map((ping: Ping) => (
+                        {Array.isArray(allPings) && allPings.map((ping: Ping) => (
                           <SelectItem key={ping.id} value={ping.id.toString()}>
                             Ping #{ping.id.toString().padStart(3, '0')} - {formatTimeAgo(ping.createdAt)}
                           </SelectItem>
@@ -355,9 +355,9 @@ export default function SendPing() {
                     <div>
                       <span className="text-slate-400">Agent:</span>
                       <span className="text-slate-200 ml-2">
-                        {user?.firstName || user?.lastName 
+                        {user && (user.firstName || user.lastName)
                           ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
-                          : "Agent 007"
+                          : user?.username || "Agent 007"
                         }
                       </span>
                     </div>

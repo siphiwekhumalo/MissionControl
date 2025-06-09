@@ -65,9 +65,9 @@ export default function Dashboard() {
     return { status: "COMPLETED", color: "slate-500", pulse: false };
   };
 
-  const totalPings = allPings?.length || 0;
-  const activeTrails = allPings?.filter((p: Ping) => !p.parentPingId).length || 0;
-  const lastPing = latestPings?.[0] ? formatTimeAgo(latestPings[0].createdAt) : "Never";
+  const totalPings = Array.isArray(allPings) ? allPings.length : 0;
+  const activeTrails = Array.isArray(allPings) ? allPings.filter((p: Ping) => !p.parentPingId).length : 0;
+  const lastPing = Array.isArray(latestPings) && latestPings[0] ? formatTimeAgo(latestPings[0].createdAt) : "Never";
 
   if (authLoading) {
     return (
@@ -209,7 +209,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-                ) : latestPings && latestPings.length > 0 ? (
+                ) : Array.isArray(latestPings) && latestPings.length > 0 ? (
                   latestPings.map((ping: Ping) => {
                     const status = getStatus(ping);
                     return (

@@ -60,7 +60,7 @@ export default function AllPings() {
     return { status: "COMPLETED", color: "slate-500", pulse: false };
   };
 
-  const filteredPings = allPings?.filter((ping: Ping) => {
+  const filteredPings = Array.isArray(allPings) ? allPings.filter((ping: Ping) => {
     const matchesSearch = 
       ping.latitude.includes(searchTerm) ||
       ping.longitude.includes(searchTerm) ||
@@ -76,7 +76,7 @@ export default function AllPings() {
       (trailFilter === "responses" && ping.parentPingId);
 
     return matchesSearch && matchesStatus && matchesTrail;
-  }) || [];
+  }) : [];
 
   if (authLoading) {
     return (

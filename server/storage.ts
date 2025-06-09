@@ -50,9 +50,6 @@ export class MemStorage implements IStorage {
     this.users.set(userId, user);
     this.usersByUsername.set(userData.username, user);
     
-    // Persist to file
-    this.persistentStorage.saveUser(user);
-    
     return user;
   }
 
