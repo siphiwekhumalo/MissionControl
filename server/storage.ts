@@ -54,17 +54,26 @@ export class MemStorage implements IStorage {
     try {
       if (existsSync(USERS_FILE)) {
         const usersData = JSON.parse(readFileSync(USERS_FILE, 'utf8'));
-        usersData.users.forEach((user: User) => {
-          this.users.set(user.id, user);
-          this.usersByUsername.set(user.username, user);
+        usersData.users.forEach((user: any) => {
+          const userWithDates = {
+            ...user,
+            createdAt: new Date(user.createdAt),
+            updatedAt: new Date(user.updatedAt)
+          };
+          this.users.set(user.id, userWithDates);
+          this.usersByUsername.set(user.username, userWithDates);
         });
         this.nextUserId = usersData.nextUserId || 1;
       }
 
       if (existsSync(PINGS_FILE)) {
         const pingsData = JSON.parse(readFileSync(PINGS_FILE, 'utf8'));
-        pingsData.pings.forEach((ping: Ping) => {
-          this.pings.set(ping.id, ping);
+        pingsData.pings.forEach((ping: any) => {
+          const pingWithDates = {
+            ...ping,
+            createdAt: new Date(ping.createdAt)
+          };
+          this.pings.set(ping.id, pingWithDates);
         });
         this.nextPingId = pingsData.nextPingId || 1;
       }
