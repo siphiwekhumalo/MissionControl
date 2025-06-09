@@ -165,7 +165,7 @@ export default function AuthPage() {
                             <Input
                               {...field}
                               placeholder="Enter your username"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50"
+                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
@@ -184,7 +184,7 @@ export default function AuthPage() {
                               {...field}
                               type="password"
                               placeholder="Enter your password"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50"
+                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
@@ -226,7 +226,7 @@ export default function AuthPage() {
                             <Input
                               {...field}
                               placeholder="Choose a username"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50"
+                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
@@ -245,7 +245,7 @@ export default function AuthPage() {
                               {...field}
                               type="email"
                               placeholder="your.email@example.com"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50"
+                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
@@ -264,7 +264,7 @@ export default function AuthPage() {
                               <Input
                                 {...field}
                                 placeholder="First name"
-                                className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50"
+                                className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
                               />
                             </FormControl>
                             <FormMessage />
@@ -282,7 +282,7 @@ export default function AuthPage() {
                               <Input
                                 {...field}
                                 placeholder="Last name"
-                                className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50"
+                                className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
                               />
                             </FormControl>
                             <FormMessage />
