@@ -44,8 +44,25 @@ MissionControl is a sophisticated web application that allows intelligence agent
    ```
 
 3. **Start the development server**
+   
+   **For Windows (Command Prompt):**
    ```bash
-   npm run dev
+   dev.bat
+   ```
+   
+   **For Windows (PowerShell):**
+   ```bash
+   .\dev.ps1
+   ```
+   
+   **For macOS/Linux:**
+   ```bash
+   NODE_ENV=development tsx server/index.ts
+   ```
+   
+   **Alternative (cross-platform):**
+   ```bash
+   npx cross-env NODE_ENV=development tsx server/index.ts
    ```
 
 4. **Access the application**
@@ -288,10 +305,28 @@ PORT=5000
 
 ### Common Issues
 
+**Windows Environment Variable Error**
+If you get `'NODE_ENV' is not recognized as an internal or external command`:
+```bash
+# Use the provided Windows batch file
+dev.bat
+
+# Or use the PowerShell script
+.\dev.ps1
+
+# Or install cross-env globally
+npm install -g cross-env
+npx cross-env NODE_ENV=development tsx server/index.ts
+```
+
 **Port Already in Use**
 ```bash
 # Kill process on port 5000
 npx kill-port 5000
+
+# On Windows, find and kill the process
+netstat -ano | findstr :5000
+taskkill /PID <PID> /F
 ```
 
 **Authentication Issues**
