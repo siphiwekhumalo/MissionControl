@@ -1,1 +1,1 @@
-node server-windows.js
+node start-dev.js

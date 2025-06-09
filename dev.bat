@@ -1,2 +1,2 @@
 @echo off
-node server-windows.js
+node start-dev.js
