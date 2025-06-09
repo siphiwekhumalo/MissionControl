@@ -1,5 +1,9 @@
 # Windows Setup Guide for MissionControl
 
+## Fixed: Node.js v18 Compatibility Issues
+
+The previous TypeScript compilation errors have been resolved with a standalone JavaScript server that bypasses all `import.meta.dirname` and TypeScript dependency issues.
+
 ## Quick Start for Windows (Node.js v18 Compatible)
 
 ### Option 1: Using Batch Files (Command Prompt) - Recommended
@@ -32,6 +36,11 @@ node server-local.js
 ```powershell
 $env:NODE_ENV = "development"
 node server-local.js
+```
+
+**Git Bash (if you prefer):**
+```bash
+NODE_ENV=development node server-local.js
 ```
 
 ### Option 4: Using cross-env (Alternative)

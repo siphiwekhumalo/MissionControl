@@ -10,6 +10,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: CreateUser): Promise<User>;
+  upsertUser(user: any): Promise<User>;
   
   // Ping operations
   createPing(ping: InsertPing & { userId: number }): Promise<Ping>;
@@ -142,6 +143,46 @@ export class MemStorage implements IStorage {
     this.usersByUsername.set(userData.username, user);
     this.saveData();
     return user;
+  }
+
+  async upsertUser(userData: any): Promise<User> {
+    // Check if user exists by ID or username
+    let existingUser = userData.id ? this.users.get(userData.id) : null;
+    if (!existingUser && userData.username) {
+      existingUser = this.usersByUsername.get(userData.username);
+    }
+
+    if (existingUser) {
+      // Update existing user
+      const updatedUser: User = {
+        ...existingUser,
+        email: userData.email ?? existingUser.email,
+        firstName: userData.firstName ?? existingUser.firstName,
+        lastName: userData.lastName ?? existingUser.lastName,
+        updatedAt: new Date(),
+      };
+      this.users.set(updatedUser.id, updatedUser);
+      this.usersByUsername.set(updatedUser.username, updatedUser);
+      this.saveData();
+      return updatedUser;
+    } else {
+      // Create new user
+      const userId = this.nextUserId++;
+      const newUser: User = {
+        id: userId,
+        username: userData.username || `user_${userId}`,
+        email: userData.email ?? null,
+        password: userData.password || 'temp_password',
+        firstName: userData.firstName ?? null,
+        lastName: userData.lastName ?? null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      this.users.set(userId, newUser);
+      this.usersByUsername.set(newUser.username, newUser);
+      this.saveData();
+      return newUser;
+    }
   }
 
   // Ping operations
