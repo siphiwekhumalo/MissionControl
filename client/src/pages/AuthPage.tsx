@@ -273,12 +273,12 @@ export default function AuthPage() {
                         name="firstName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-mission-silver">First Name</FormLabel>
+                            <FormLabel className="text-mission-silver font-medium">First Name</FormLabel>
                             <FormControl>
                               <Input
                                 {...field}
                                 placeholder="First name"
-                                className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
+                                className="bg-mission-dark/60 border-mission-gold/30 text-white placeholder:text-mission-silver/50 focus:border-mission-gold focus:ring-2 focus:ring-mission-gold/20 transition-all duration-200 pointer-events-auto relative z-50"
                               />
                             </FormControl>
                             <FormMessage />
@@ -291,12 +291,12 @@ export default function AuthPage() {
                         name="lastName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-mission-silver">Last Name</FormLabel>
+                            <FormLabel className="text-mission-silver font-medium">Last Name</FormLabel>
                             <FormControl>
                               <Input
                                 {...field}
                                 placeholder="Last name"
-                                className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
+                                className="bg-mission-dark/60 border-mission-gold/30 text-white placeholder:text-mission-silver/50 focus:border-mission-gold focus:ring-2 focus:ring-mission-gold/20 transition-all duration-200 pointer-events-auto relative z-50"
                               />
                             </FormControl>
                             <FormMessage />
