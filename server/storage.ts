@@ -1,14 +1,15 @@
 import {
   type User,
-  type UpsertUser,
+  type CreateUser,
   type Ping,
   type InsertPing,
 } from "@shared/schema";
 
 export interface IStorage {
-  // User operations (mandatory for Replit Auth)
+  // User operations for JWT auth
   getUser(id: string): Promise<User | undefined>;
-  upsertUser(user: UpsertUser): Promise<User>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: CreateUser): Promise<User>;
   
   // Ping operations
   createPing(ping: InsertPing & { userId: string }): Promise<Ping>;
@@ -20,26 +21,34 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private users: Map<string, User> = new Map();
+  private usersByUsername: Map<string, User> = new Map();
   private pings: Map<number, Ping> = new Map();
+  private nextUserId = 1;
   private nextPingId = 1;
 
-  // User operations (mandatory for Replit Auth)
+  // User operations for JWT auth
   async getUser(id: string): Promise<User | undefined> {
     return this.users.get(id);
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
-    const existingUser = this.users.get(userData.id);
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return this.usersByUsername.get(username);
+  }
+
+  async createUser(userData: CreateUser): Promise<User> {
+    const userId = (this.nextUserId++).toString();
     const user: User = {
-      id: userData.id,
+      id: userId,
+      username: userData.username,
       email: userData.email ?? null,
+      password: userData.password,
       firstName: userData.firstName ?? null,
       lastName: userData.lastName ?? null,
-      profileImageUrl: userData.profileImageUrl ?? null,
-      createdAt: existingUser?.createdAt || new Date(),
+      createdAt: new Date(),
       updatedAt: new Date(),
     };
-    this.users.set(userData.id, user);
+    this.users.set(userId, user);
+    this.usersByUsername.set(userData.username, user);
     return user;
   }
 

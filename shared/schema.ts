@@ -3,12 +3,21 @@ import { z } from "zod";
 // User types for in-memory storage
 export interface User {
   id: string;
+  username: string;
   email: string | null;
+  password: string;
   firstName: string | null;
   lastName: string | null;
-  profileImageUrl: string | null;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface CreateUser {
+  username: string;
+  email?: string | null;
+  password: string;
+  firstName?: string | null;
+  lastName?: string | null;
 }
 
 export interface UpsertUser {
@@ -16,7 +25,6 @@ export interface UpsertUser {
   email?: string | null;
   firstName?: string | null;
   lastName?: string | null;
-  profileImageUrl?: string | null;
 }
 
 // Ping types for in-memory storage
@@ -38,3 +46,20 @@ export const insertPingSchema = z.object({
 });
 
 export type InsertPing = z.infer<typeof insertPingSchema>;
+
+// Authentication schemas
+export const registerSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string().email("Invalid email address").optional(),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+});
+
+export const loginSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
+export type RegisterData = z.infer<typeof registerSchema>;
+export type LoginData = z.infer<typeof loginSchema>;
