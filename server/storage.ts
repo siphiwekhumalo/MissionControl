@@ -19,69 +19,12 @@ export interface IStorage {
   respondToPing(parentId: number, ping: InsertPing & { userId: number }): Promise<Ping>;
 }
 
-// File-based persistence for user data
-class PersistentStorage {
-  private filePath = './users.json';
-  
-  private loadUsers(): Map<number, User> {
-    try {
-      const fs = require('fs');
-      if (fs.existsSync(this.filePath)) {
-        const data = fs.readFileSync(this.filePath, 'utf8');
-        const usersArray = JSON.parse(data);
-        const users = new Map<number, User>();
-        usersArray.forEach((user: User) => {
-          users.set(user.id, user);
-        });
-        return users;
-      }
-    } catch (error) {
-      console.error('Error loading users:', error);
-    }
-    return new Map();
-  }
-  
-  private saveUsers(users: Map<number, User>): void {
-    try {
-      const fs = require('fs');
-      const usersArray = Array.from(users.values());
-      fs.writeFileSync(this.filePath, JSON.stringify(usersArray, null, 2));
-    } catch (error) {
-      console.error('Error saving users:', error);
-    }
-  }
-  
-  getUsers(): Map<number, User> {
-    return this.loadUsers();
-  }
-  
-  saveUser(user: User): void {
-    const users = this.loadUsers();
-    users.set(user.id, user);
-    this.saveUsers(users);
-  }
-}
-
 export class MemStorage implements IStorage {
-  private persistentStorage = new PersistentStorage();
-  private users: Map<number, User>;
+  private users: Map<number, User> = new Map();
   private usersByUsername: Map<string, User> = new Map();
   private pings: Map<number, Ping> = new Map();
   private nextUserId = 1;
   private nextPingId = 1;
-
-  constructor() {
-    // Load persisted users
-    this.users = this.persistentStorage.getUsers();
-    
-    // Rebuild username index and find next ID
-    this.users.forEach((user) => {
-      this.usersByUsername.set(user.username, user);
-      if (user.id >= this.nextUserId) {
-        this.nextUserId = user.id + 1;
-      }
-    });
-  }
 
   // User operations for JWT auth
   async getUser(id: number): Promise<User | undefined> {

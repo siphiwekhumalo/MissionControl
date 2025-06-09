@@ -44,20 +44,12 @@ export default function SendPing() {
     }
   }, []);
 
-  // Redirect to home if not authenticated
+  // Redirect to auth if not authenticated (but wait for auth to complete)
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
+      setLocation("/auth");
     }
-  }, [isAuthenticated, authLoading, toast]);
+  }, [isAuthenticated, authLoading, setLocation]);
 
   const { data: allPings } = useQuery({
     queryKey: ["/api/pings"],
