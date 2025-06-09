@@ -144,12 +144,19 @@ export default function AuthPage() {
           {/* Auth forms */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Login Form */}
-            <Card className="glass gradient-border rounded-2xl overflow-hidden">
+            <Card className="glass gradient-border rounded-2xl overflow-hidden backdrop-blur-xl bg-mission-dark/20 border border-mission-green/30">
               <CardContent className="p-8">
                 <div className="text-center mb-6">
-                  <h2 className="text-xl font-semibold text-white mb-2">Agent Login</h2>
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-mission-green to-mission-blue rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <h2 className="text-2xl font-bold text-white mb-2">Login</h2>
                   <p className="text-mission-silver text-sm">
-                    Access your secure mission dashboard
+                    Enter your credentials to access MissionControl
                   </p>
                 </div>
                 
@@ -160,12 +167,12 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-mission-silver">Username</FormLabel>
+                          <FormLabel className="text-mission-silver font-medium">Username</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               placeholder="Enter your username"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
+                              className="bg-mission-dark/60 border-mission-green/30 text-white placeholder:text-mission-silver/50 focus:border-mission-green focus:ring-2 focus:ring-mission-green/20 transition-all duration-200 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
@@ -178,13 +185,13 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-mission-silver">Password</FormLabel>
+                          <FormLabel className="text-mission-silver font-medium">Password</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               type="password"
                               placeholder="Enter your password"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
+                              className="bg-mission-dark/60 border-mission-green/30 text-white placeholder:text-mission-silver/50 focus:border-mission-green focus:ring-2 focus:ring-mission-green/20 transition-all duration-200 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
@@ -195,9 +202,9 @@ export default function AuthPage() {
                     <Button 
                       type="submit"
                       disabled={loginForm.formState.isSubmitting}
-                      className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-3 rounded-xl transition-all-smooth glow-green group cursor-pointer pointer-events-auto relative z-40"
+                      className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-mission-green/25 group cursor-pointer pointer-events-auto relative z-40"
                     >
-                      {loginForm.formState.isSubmitting ? "Authenticating..." : "Initialize Secure Connection"}
+                      {loginForm.formState.isSubmitting ? "Logging in..." : "Login"}
                     </Button>
                   </form>
                 </Form>
@@ -205,12 +212,19 @@ export default function AuthPage() {
             </Card>
 
             {/* Register Form */}
-            <Card className="glass gradient-border rounded-2xl overflow-hidden">
+            <Card className="glass gradient-border rounded-2xl overflow-hidden backdrop-blur-xl bg-mission-dark/20 border border-mission-gold/30">
               <CardContent className="p-8">
                 <div className="text-center mb-6">
-                  <h2 className="text-xl font-semibold text-white mb-2">Agent Registration</h2>
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-mission-gold to-mission-green rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L9 7V9C7.9 9 7 9.9 7 11V16L15 22L23 16V11C23 9.9 22.1 9 21 9Z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <h2 className="text-2xl font-bold text-white mb-2">Sign Up</h2>
                   <p className="text-mission-silver text-sm">
-                    Join the classified operations network
+                    Create your account to join MissionControl
                   </p>
                 </div>
                 
@@ -221,12 +235,12 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-mission-silver">Username</FormLabel>
+                          <FormLabel className="text-mission-silver font-medium">Username</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               placeholder="Choose a username"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
+                              className="bg-mission-dark/60 border-mission-gold/30 text-white placeholder:text-mission-silver/50 focus:border-mission-gold focus:ring-2 focus:ring-mission-gold/20 transition-all duration-200 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
@@ -239,13 +253,13 @@ export default function AuthPage() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-mission-silver">Email (Optional)</FormLabel>
+                          <FormLabel className="text-mission-silver font-medium">Email (Optional)</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               type="email"
                               placeholder="your.email@example.com"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
+                              className="bg-mission-dark/60 border-mission-gold/30 text-white placeholder:text-mission-silver/50 focus:border-mission-gold focus:ring-2 focus:ring-mission-gold/20 transition-all duration-200 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
@@ -313,9 +327,9 @@ export default function AuthPage() {
                     <Button 
                       type="submit"
                       disabled={registerForm.formState.isSubmitting}
-                      className="w-full bg-gradient-to-r from-mission-gold to-mission-green hover:from-mission-green hover:to-mission-gold text-white font-medium py-3 rounded-xl transition-all-smooth glow-gold group cursor-pointer pointer-events-auto relative z-40"
+                      className="w-full bg-gradient-to-r from-mission-gold to-mission-green hover:from-mission-green hover:to-mission-gold text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-mission-gold/25 group cursor-pointer pointer-events-auto relative z-40"
                     >
-                      {registerForm.formState.isSubmitting ? "Creating Account..." : "Establish Agent Credentials"}
+                      {registerForm.formState.isSubmitting ? "Creating Account..." : "Sign Up"}
                     </Button>
                   </form>
                 </Form>

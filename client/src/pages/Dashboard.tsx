@@ -20,7 +20,7 @@ interface Ping {
 
 export default function Dashboard() {
   const { toast } = useToast();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useJWTAuth();
 
   // Redirect to home if not authenticated
   useEffect(() => {
