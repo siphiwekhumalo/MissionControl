@@ -1,2 +1,1 @@
-$env:NODE_ENV = "development"
-npm run dev
+npx cross-env NODE_ENV=development tsx server/index.ts
