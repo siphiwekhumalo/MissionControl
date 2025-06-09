@@ -1,2 +1,2 @@
 $env:NODE_ENV = "development"
-npx tsx server/index.ts
+node server-local.js
