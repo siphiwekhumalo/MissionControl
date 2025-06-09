@@ -1,0 +1,21 @@
+C:\BahekaDev\MissionControl>dev.bat
+🚀 MissionControl Development Launcher
+📋 Node.js version: v18.20.6
+⚠️  Using compatibility server (Node.js 18)
+🔧 Starting server...
+💻 Command: npx.cmd cross-env NODE_ENV=development tsx server-compatible.ts
+file:///C:/BahekaDev/MissionControl/server/replitAuth.ts:1
+var __defProp=Object.defineProperty;var __name=(target,value)=>__defProp(target,"name",{value,configurable:true});import*as client from"openid-client";import{Strategy}from"openid-client/passport";import passport from"passport";import session from"express-session";import memoize from"memoizee";import{storage}from"./storage";if(!process.env.REPLIT_DOMAINS){throw new Error("Environment variable REPLIT_DOMAINS not provided")}const getOidcConfig=memoize(async()=>{return await client.discovery(new URL(process.env.ISSUER_URL??"https://replit.com/oidc"),process.env.REPL_ID)},{maxAge:3600*1e3});function getSession(){const sessionTtl=7*24*60*60*1e3;return session({secret:process.env.SESSION_SECRET,resave:false,saveUninitialized:false,cookie:{httpOnly:true,secure:true,maxAge:sessionTtl}})}__name(getSession,"getSession");function updateUserSession(user,tokens){user.claims=tokens.claims();user.access_token=tokens.access_token;user.refresh_token=tokens.refresh_token;user.expires_at=user.claims?.exp}__name(updateUserSession,"updateUserSession");async function upsertUser(claims){await storage.upsertUser({id:claims["sub"],email:claims["email"],firstName:claims["first_name"],lastName:claims["last_name"],profileImageUrl:claims["profile_image_url"]})}__name(upsertUser,"upsertUser");async function setupAuth(app){app.set("trust proxy",1);app.use(getSession());app.use(passport.initialize());app.use(passport.session());const config=await getOidcConfig();const verify=__name(async(tokens,verified)=>{const user={};updateUserSession(user,tokens);await upsertUser(tokens.claims());verified(null,user)},"verify");for(const domain of process.env.REPLIT_DOMAINS.split(",")){const strategy=new Strategy({name:`replitauth:${domain}`,config,scope:"openid email profile offline_access",callbackURL:`https://${domain}/api/callback`},verify);passport.use(strategy)}passport.serializeUser((user,cb)=>cb(null,user));passport.deserializeUser((user,cb)=>cb(null,user));app.get("/api/login",(req,res,next)=>{passport.authenticate(`replitauth:${req.hostname}`,{prompt:"login consent",scope:["openid","email","profile","offline_access"]})(req,res,next)});app.get("/api/callback",(req,res,next)=>{passport.authenticate(`replitauth:${req.hostname}`,{successReturnToOrRedirect:"/",failureRedirect:"/api/login"})(req,res,next)});app.get("/api/logout",(req,res)=>{req.logout(()=>{res.redirect(client.buildEndSessionUrl(config,{client_id:process.env.REPL_ID,post_logout_redirect_uri:`${req.protocol}://${req.hostname}`}).href)})})}__name(setupAuth,"setupAuth");const isAuthenticated=__name(async(req,res,next)=>{const user=req.user;if(!req.isAuthenticated()||!user.expires_at){return res.status(401).json({message:"Unauthorized"})}const now=Math.floor(Date.now()/1e3);if(now<=user.expires_at){return next()}const refreshToken=user.refresh_token;if(!refreshToken){res.status(401).json({message:"Unauthorized"});return}try{const config=await getOidcConfig();const tokenResponse=await client.refreshTokenGrant(config,refreshToken);updateUserSession(user,tokenResponse);return next()}catch(error){res.status(401).json({message:"Unauthorized"});return}},"isAuthenticated");export{getSession,isAuthenticated,setupAuth};
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                   ^
+
+Error: Environment variable REPLIT_DOMAINS not provided
+    at <anonymous> (c:\BahekaDev\MissionControl\server\replitAuth.ts:12:9)
+    at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+    at async loadESM (node:internal/process/esm_loader:34:7)
+    at async handleMainPromise (node:internal/modules/run_main:106:12)
+
+Node.js v18.20.6
+⚠️  Server exited with code 1

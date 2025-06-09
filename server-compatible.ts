@@ -4,7 +4,6 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { createServer } from "vite";
 import { registerRoutes } from "./server/routes.js";
-import { setupAuth } from "./server/replitAuth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -34,10 +33,7 @@ async function startServer() {
   // Use Vite's middleware
   app.use(vite.middlewares);
 
-  // Setup authentication
-  await setupAuth(app);
-
-  // Register API routes
+  // Register API routes (bypassing Replit auth for local development)
   const server = await registerRoutes(app);
 
   // Error handling
