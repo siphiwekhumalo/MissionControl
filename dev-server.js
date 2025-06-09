@@ -1,54 +1,52 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import compression from 'compression';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import fs from 'fs';
+import { createServer } from 'vite';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3001; // Use different port to avoid conflicts
-const JWT_SECRET = process.env.JWT_SECRET || 'mission-control-secret-key-007';
+const PORT = 3001;
 
-// In-memory storage
+// Create Vite dev server
+const vite = await createServer({
+  root: join(__dirname, 'client'),
+  server: { middlewareMode: true },
+  resolve: {
+    alias: {
+      '@': join(__dirname, 'client/src'),
+      '@shared': join(__dirname, 'shared'),
+      '@assets': join(__dirname, 'attached_assets'),
+    }
+  }
+});
+
+// Use Vite's connect instance as middleware
+app.use(vite.middlewares);
+
+// Add our API routes before the catch-all
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = 'mission-control-secret-key-007';
 let users = [];
 let pings = [];
 let nextUserId = 1;
 let nextPingId = 1;
 
 // Auth functions
-const hashPassword = async (password) => {
-  return await bcrypt.hash(password, 10);
-};
-
-const verifyPassword = async (password, hash) => {
-  return await bcrypt.compare(password, hash);
-};
-
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '24h' });
-};
-
+const hashPassword = async (password) => await bcrypt.hash(password, 10);
+const verifyPassword = async (password, hash) => await bcrypt.compare(password, hash);
+const generateToken = (userId) => jwt.sign({ userId }, JWT_SECRET, { expiresIn: '24h' });
 const verifyToken = (token) => {
-  try {
-    return jwt.verify(token, JWT_SECRET);
-  } catch (error) {
-    return null;
-  }
+  try { return jwt.verify(token, JWT_SECRET); }
+  catch (error) { return null; }
 };
 
 // Middleware
-app.use(compression());
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: false, limit: '10mb' }));
-
-// Serve static files from client directory for development
-app.use('/src', express.static(join(__dirname, 'client/src')));
-app.use('/assets', express.static(join(__dirname, 'attached_assets')));
-app.use('/node_modules', express.static(join(__dirname, 'node_modules')));
-app.use(express.static(join(__dirname, 'client')));
 
 // Auth middleware
 const authenticate = (req, res, next) => {
@@ -81,7 +79,7 @@ const authenticate = (req, res, next) => {
   }
 };
 
-// Auth routes
+// API Routes
 app.post('/api/register', async (req, res) => {
   try {
     const { username, email, password, firstName, lastName } = req.body;
@@ -146,7 +144,6 @@ app.get('/api/user', authenticate, (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
     const { password: _, ...userWithoutPassword } = user;
     res.json(userWithoutPassword);
   } catch (error) {
@@ -155,11 +152,9 @@ app.get('/api/user', authenticate, (req, res) => {
   }
 });
 
-// Ping routes
 app.post('/api/pings', authenticate, (req, res) => {
   try {
     const { latitude, longitude, message } = req.body;
-    
     const ping = {
       id: nextPingId++,
       userId: req.userId,
@@ -169,7 +164,6 @@ app.post('/api/pings', authenticate, (req, res) => {
       parentPingId: null,
       createdAt: new Date()
     };
-
     pings.push(ping);
     console.log(`[SECURITY] Agent ${req.userId} created transmission #${ping.id}`);
     res.status(201).json(ping);
@@ -196,7 +190,6 @@ app.get('/api/pings/latest', authenticate, (req, res) => {
       .filter(p => p.userId === req.userId)
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       .slice(0, 3);
-    
     console.log(`[SECURITY] Agent ${req.userId} accessed latest transmissions`);
     res.json(userPings);
   } catch (error) {
@@ -214,7 +207,6 @@ app.post('/api/pings/:id', authenticate, (req, res) => {
     if (!parentPing) {
       return res.status(404).json({ message: 'Parent ping not found' });
     }
-
     if (parentPing.userId !== req.userId) {
       return res.status(403).json({ message: 'Access denied' });
     }
@@ -228,7 +220,6 @@ app.post('/api/pings/:id', authenticate, (req, res) => {
       parentPingId: pingId,
       createdAt: new Date()
     };
-
     pings.push(ping);
     console.log(`[SECURITY] Agent ${req.userId} responded to transmission #${pingId}`);
     res.status(201).json(ping);
@@ -238,143 +229,10 @@ app.post('/api/pings/:id', authenticate, (req, res) => {
   }
 });
 
-// Serve the React frontend for all non-API routes
-app.get('*', (req, res) => {
-  // Skip API routes
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ message: 'API endpoint not found' });
-  }
-  
-  // Serve the React application HTML
-  const html = `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>MissionControl - Intelligence Operations</title>
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "/node_modules/react/index.js",
-        "react-dom": "/node_modules/react-dom/index.js",
-        "react-dom/client": "/node_modules/react-dom/client.js",
-        "three": "/node_modules/three/build/three.module.js",
-        "wouter": "/node_modules/wouter/index.js",
-        "@tanstack/react-query": "/node_modules/@tanstack/react-query/build/modern/index.js"
-      }
-    }
-    </script>
-    <script>
-      // Enable JSX transformation for development
-      window.process = { env: { NODE_ENV: 'development' } };
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module">
-      // Simple JSX transformer for development
-      import { createElement as h } from 'react';
-      import { createRoot } from 'react-dom/client';
-      
-      // Basic App component loading screen
-      const App = () => {
-        return h('div', {
-          style: {
-            minHeight: '100vh',
-            background: 'linear-gradient(135deg, #000000 0%, #0a0a1a 100%)',
-            color: '#ffffff',
-            fontFamily: "'SF Pro Display', 'Helvetica Neue', Arial, sans-serif",
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column'
-          }
-        }, [
-          h('div', {
-            key: 'spinner',
-            style: {
-              width: '40px',
-              height: '40px',
-              border: '3px solid rgba(0, 255, 136, 0.1)',
-              borderTop: '3px solid #00ff88',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite'
-            }
-          }),
-          h('h1', {
-            key: 'title',
-            style: { color: '#00ff88', marginTop: '20px' }
-          }, 'MissionControl'),
-          h('p', {
-            key: 'subtitle',
-            style: { color: '#cccccc' }
-          }, 'Intelligence Operations Network'),
-          h('p', {
-            key: 'status',
-            style: { color: '#888', fontSize: '14px', marginTop: '20px' }
-          }, 'Backend API operational on port ${PORT}'),
-          h('style', {
-            key: 'styles'
-          }, '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }')
-        ]);
-      };
-      
-      const root = createRoot(document.getElementById('root'));
-      root.render(h(App));
-      
-      // Try to load the actual React app after a delay
-      setTimeout(() => {
-        fetch('/src/main.tsx')
-          .then(response => {
-            if (response.ok) {
-              // If main.tsx exists, try to load it
-              const script = document.createElement('script');
-              script.type = 'module';
-              script.src = '/src/main.tsx';
-              document.head.appendChild(script);
-            }
-          })
-          .catch(() => {
-            // If main.tsx doesn't load, show API documentation
-            const apiDocs = h('div', {
-              style: {
-                textAlign: 'center',
-                padding: '40px',
-                maxWidth: '600px'
-              }
-            }, [
-              h('h2', { key: 'api-title', style: { color: '#00ff88' } }, 'API Endpoints Available'),
-              h('div', {
-                key: 'endpoints',
-                style: {
-                  background: 'rgba(0,255,136,0.1)',
-                  padding: '20px',
-                  borderRadius: '8px',
-                  textAlign: 'left'
-                }
-              }, [
-                h('p', { key: 'register' }, 'POST /api/register - Agent registration'),
-                h('p', { key: 'login' }, 'POST /api/login - Agent authentication'),
-                h('p', { key: 'user' }, 'GET /api/user - User profile'),
-                h('p', { key: 'pings' }, 'POST /api/pings - Create transmission'),
-                h('p', { key: 'get-pings' }, 'GET /api/pings - List transmissions'),
-                h('p', { key: 'latest' }, 'GET /api/pings/latest - Latest transmissions')
-              ])
-            ]);
-            
-            root.render(apiDocs);
-          });
-      }, 2000);
-    </script>
-  </body>
-</html>`;
-  
-  res.send(html);
-});
-
 app.listen(PORT, () => {
-  console.log('🚀 MissionControl Server Operational');
-  console.log(`🛡️  Security protocols active on port ${PORT}`);
-  console.log(`🌐 Access at: http://localhost:${PORT}`);
-  console.log('🔒 All transmissions secured with JWT authentication\n');
+  console.log('🚀 MissionControl Development Server Operational');
+  console.log(`🛡️ Security protocols active on port ${PORT}`);
+  console.log(`🌐 Frontend: http://localhost:${PORT}`);
+  console.log(`📡 Backend API: http://localhost:${PORT}/api`);
+  console.log('🔒 Full React + Three.js application with JWT authentication\n');
 });
