@@ -182,10 +182,10 @@ export default function Dashboard() {
                     <h3 className="bond-title text-xl font-light text-white">Intelligence Feed</h3>
                     <p className="bond-subtitle text-mission-silver text-sm">Recent transmission activity</p>
                   </div>
-                  <Link href="/all-pings">
+                  <Link href="/all-pings" className="inline-block">
                     <Button 
                       variant="ghost" 
-                      className="group flex items-center space-x-2 px-4 py-2 bg-mission-green/20 hover:bg-mission-green/30 text-mission-green rounded-lg transition-all-smooth glow-green border-0"
+                      className="group flex items-center space-x-2 px-4 py-2 bg-mission-green/20 hover:bg-mission-green/30 text-mission-green rounded-lg transition-all-smooth glow-green border-0 cursor-pointer"
                     >
                       <span className="text-sm font-medium">View Archive</span>
                       <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
@@ -298,8 +298,8 @@ export default function Dashboard() {
                 <p className="bond-subtitle text-mission-silver text-sm">Tactical operations</p>
               </div>
               <div className="space-y-4">
-                <Link href="/send-ping">
-                  <Button className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group">
+                <Link href="/send-ping" className="block w-full">
+                  <Button className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group cursor-pointer">
                     <div className="flex items-center justify-center space-x-3">
                       <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -308,8 +308,8 @@ export default function Dashboard() {
                     </div>
                   </Button>
                 </Link>
-                <Link href="/all-pings">
-                  <Button className="w-full bg-mission-surface/50 hover:bg-mission-surface border border-mission-surface hover:border-mission-gold text-mission-silver hover:text-white font-medium py-3 px-6 rounded-xl transition-all-smooth">
+                <Link href="/all-pings" className="block w-full">
+                  <Button className="w-full bg-mission-surface/50 hover:bg-mission-surface border border-mission-surface hover:border-mission-gold text-mission-silver hover:text-white font-medium py-3 px-6 rounded-xl transition-all-smooth cursor-pointer">
                     <div className="flex items-center justify-center space-x-3">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
