@@ -1,8 +1,14 @@
 # Windows Setup Guide for MissionControl
 
-## Fixed: Complete React + Three.js Development Setup
+## Permanent Fix: Node.js v18 Compatibility
 
-Created a Vite-powered development server that serves the full spy-themed application with Three.js animations, glass morphism UI, and all advanced features. No more TypeScript compilation errors or missing frontend.
+The application now includes multiple compatibility layers to ensure it works on Windows with any Node.js version:
+
+### ✅ Solutions Implemented:
+- **Node.js v18 Compatible Server**: Bypasses `import.meta.dirname` issues
+- **Cross-platform Environment Variables**: Uses cross-env for Windows compatibility  
+- **Alternative Vite Configuration**: Node.js v18 compatible config file
+- **Multiple Start Methods**: Batch files, PowerShell scripts, and manual options
 
 ## Quick Start for Windows (Node.js v18 Compatible)
 
