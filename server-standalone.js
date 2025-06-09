@@ -44,6 +44,11 @@ app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
+// Serve static files from client directory for development
+app.use('/src', express.static(join(__dirname, 'client/src')));
+app.use('/assets', express.static(join(__dirname, 'attached_assets')));
+app.use(express.static(join(__dirname, 'client')));
+
 // Auth middleware
 const authenticate = (req, res, next) => {
   try {
@@ -230,6 +235,86 @@ app.post('/api/pings/:id', authenticate, (req, res) => {
     console.error('Respond to ping error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
+});
+
+// Serve the main HTML file for all non-API routes
+app.get('*', (req, res) => {
+  // Skip API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ message: 'API endpoint not found' });
+  }
+  
+  // Create a basic HTML template for the React app
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MissionControl - Intelligence Operations</title>
+    <style>
+        body { 
+            margin: 0; 
+            font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #0a0a1a 100%);
+            color: #ffffff;
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 255, 136, 0.1);
+            border-top: 3px solid #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; color: #00ff88;">Initializing MissionControl...</p>
+    </div>
+    
+    <script>
+        // Basic message for development
+        setTimeout(() => {
+            document.querySelector('.loading').innerHTML = \`
+                <div style="text-align: center; padding: 40px;">
+                    <h1 style="color: #00ff88; margin-bottom: 20px;">🕴️ MissionControl</h1>
+                    <h2 style="color: #ffffff; font-weight: 300;">Intelligence Operations Network</h2>
+                    <p style="color: #cccccc; margin: 20px 0;">Backend API operational on port ${PORT}</p>
+                    <div style="margin-top: 30px; padding: 20px; background: rgba(0,255,136,0.1); border-radius: 8px;">
+                        <h3 style="color: #00ff88; margin-bottom: 15px;">Available API Endpoints:</h3>
+                        <div style="text-align: left; max-width: 400px; margin: 0 auto;">
+                            <p><strong>POST</strong> /api/register - Agent registration</p>
+                            <p><strong>POST</strong> /api/login - Agent authentication</p>
+                            <p><strong>GET</strong> /api/user - User profile</p>
+                            <p><strong>POST</strong> /api/pings - Create transmission</p>
+                            <p><strong>GET</strong> /api/pings - List transmissions</p>
+                            <p><strong>GET</strong> /api/pings/latest - Latest transmissions</p>
+                        </div>
+                    </div>
+                    <p style="color: #888; margin-top: 30px; font-size: 14px;">
+                        For full frontend experience, build and deploy the React application
+                    </p>
+                </div>
+            \`;
+        }, 1500);
+    </script>
+</body>
+</html>`;
+  
+  res.send(html);
 });
 
 app.listen(PORT, () => {
