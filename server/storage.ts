@@ -19,12 +19,77 @@ export interface IStorage {
   respondToPing(parentId: number, ping: InsertPing & { userId: number }): Promise<Ping>;
 }
 
+// Persistent storage using JSON files for development
+const DATA_DIR = './data';
+const USERS_FILE = `${DATA_DIR}/users.json`;
+const PINGS_FILE = `${DATA_DIR}/pings.json`;
+
+import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
+
+// Ensure data directory exists
+if (!existsSync(DATA_DIR)) {
+  mkdirSync(DATA_DIR, { recursive: true });
+}
+
+interface StorageData {
+  users: User[];
+  usersByUsername: Record<string, User>;
+  pings: Ping[];
+  nextUserId: number;
+  nextPingId: number;
+}
+
 export class MemStorage implements IStorage {
   private users: Map<number, User> = new Map();
   private usersByUsername: Map<string, User> = new Map();
   private pings: Map<number, Ping> = new Map();
   private nextUserId = 1;
   private nextPingId = 1;
+
+  constructor() {
+    this.loadData();
+  }
+
+  private loadData() {
+    try {
+      if (existsSync(USERS_FILE)) {
+        const usersData = JSON.parse(readFileSync(USERS_FILE, 'utf8'));
+        usersData.users.forEach((user: User) => {
+          this.users.set(user.id, user);
+          this.usersByUsername.set(user.username, user);
+        });
+        this.nextUserId = usersData.nextUserId || 1;
+      }
+
+      if (existsSync(PINGS_FILE)) {
+        const pingsData = JSON.parse(readFileSync(PINGS_FILE, 'utf8'));
+        pingsData.pings.forEach((ping: Ping) => {
+          this.pings.set(ping.id, ping);
+        });
+        this.nextPingId = pingsData.nextPingId || 1;
+      }
+    } catch (error) {
+      console.log('Starting with empty storage');
+    }
+  }
+
+  private saveData() {
+    try {
+      const usersData = {
+        users: Array.from(this.users.values()),
+        nextUserId: this.nextUserId,
+      };
+      writeFileSync(USERS_FILE, JSON.stringify(usersData, null, 2));
+
+      const pingsData = {
+        pings: Array.from(this.pings.values()),
+        nextPingId: this.nextPingId,
+      };
+      writeFileSync(PINGS_FILE, JSON.stringify(pingsData, null, 2));
+    } catch (error) {
+      console.error('Failed to save data:', error);
+    }
+  }
 
   // User operations for JWT auth
   async getUser(id: number): Promise<User | undefined> {
@@ -49,7 +114,7 @@ export class MemStorage implements IStorage {
     };
     this.users.set(userId, user);
     this.usersByUsername.set(userData.username, user);
-    
+    this.saveData();
     return user;
   }
 
@@ -61,10 +126,11 @@ export class MemStorage implements IStorage {
       latitude: pingData.latitude,
       longitude: pingData.longitude,
       message: pingData.message ?? null,
-      parentPingId: null,
+      parentPingId: pingData.parentPingId ?? null,
       createdAt: new Date(),
     };
     this.pings.set(ping.id, ping);
+    this.saveData();
     return ping;
   }
 
@@ -95,6 +161,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
     };
     this.pings.set(ping.id, ping);
+    this.saveData();
     return ping;
   }
 }
