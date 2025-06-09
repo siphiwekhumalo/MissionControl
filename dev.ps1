@@ -1,2 +1,2 @@
 $env:NODE_ENV = "development"
-node dev-server.js
+npm run dev

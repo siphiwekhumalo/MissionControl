@@ -10,19 +10,15 @@ Created a Vite-powered development server that serves the full spy-themed applic
 ```cmd
 # Development
 dev.bat
-
-# Production
-start.bat
 ```
+Then open: http://localhost:5000
 
 ### Option 2: Using PowerShell Scripts  
 ```powershell
 # Development
 .\dev.ps1
-
-# Production  
-.\start.ps1
 ```
+Then open: http://localhost:5000
 
 ### Option 3: Manual Environment Variable Setting
 
