@@ -64,19 +64,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Find user
       const user = await storage.getUserByUsername(username);
       if (!user) {
-        console.log("User not found:", username);
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
       // Verify password
-      console.log("Verifying password for user:", username);
-      console.log("Input password:", password);
-      console.log("Stored hash:", user.password);
-      console.log("Stored hash length:", user.password.length);
       const isValid = await verifyPassword(password, user.password);
-      console.log("Password valid:", isValid);
       if (!isValid) {
-        console.log("Password verification failed");
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
