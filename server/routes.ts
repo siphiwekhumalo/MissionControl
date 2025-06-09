@@ -119,6 +119,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: req.userId!,
       });
 
+      // Security audit log for new transmissions
+      console.log(`[SECURITY] Agent ${req.userId} created transmission #${ping.id} at coordinates [${ping.latitude}, ${ping.longitude}] - ${new Date().toISOString()}`);
+
       res.status(201).json(ping);
     } catch (error) {
       console.error("Create ping error:", error);
@@ -128,7 +131,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/pings', authenticate, async (req: AuthRequest, res) => {
     try {
+      res.set('Cache-Control', 'private, max-age=60'); // Private cache for security
       const pings = await storage.getUserPings(req.userId!);
+      
+      // Security audit log
+      console.log(`[SECURITY] Agent ${req.userId} accessed ${pings.length} transmissions at ${new Date().toISOString()}`);
+      
       res.json(pings);
     } catch (error) {
       console.error("Get pings error:", error);
@@ -138,7 +146,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/pings/latest', authenticate, async (req: AuthRequest, res) => {
     try {
+      // Security headers for classified transmissions
+      res.set({
+        'Cache-Control': 'private, no-store, max-age=0',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'X-XSS-Protection': '1; mode=block'
+      });
+      
       const pings = await storage.getLatestUserPings(req.userId!, 3);
+      
+      // Security audit log
+      console.log(`[SECURITY] Agent ${req.userId} accessed latest transmissions at ${new Date().toISOString()}`);
+      
       res.json(pings);
     } catch (error) {
       console.error("Get latest pings error:", error);
@@ -161,16 +181,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Verify parent ping exists
+      // Verify parent ping exists and belongs to current user
       const parentPing = await storage.getPingById(pingId);
       if (!parentPing) {
         return res.status(404).json({ message: "Parent ping not found" });
+      }
+      
+      // Security: Ensure user can only respond to their own pings
+      if (parentPing.userId !== req.userId!) {
+        return res.status(403).json({ message: "Access denied: Cannot respond to another agent's transmission" });
       }
 
       const ping = await storage.respondToPing(pingId, {
         ...validation.data,
         userId: req.userId!,
       });
+
+      // Security audit log for trail responses
+      console.log(`[SECURITY] Agent ${req.userId} responded to transmission #${pingId} with new transmission #${ping.id} - ${new Date().toISOString()}`);
 
       res.status(201).json(ping);
     } catch (error) {

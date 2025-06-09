@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo, useMemo, useCallback } from "react";
 import { useJWTAuth } from "@/hooks/useJWTAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -205,9 +205,19 @@ export default function AllPings() {
                           </span>
                         </td>
                         <td className="py-4 px-6">
-                          <span className="text-sm text-slate-400">
-                            {ping.parentPingId ? `#${ping.parentPingId.toString().padStart(3, '0')}` : "—"}
-                          </span>
+                          {ping.parentPingId ? (
+                            <div className="flex items-center space-x-2">
+                              <div className="w-2 h-2 bg-mission-green rounded-full"></div>
+                              <span className="text-sm text-mission-green font-mono">
+                                #{ping.parentPingId.toString().padStart(3, '0')}
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center space-x-2">
+                              <div className="w-2 h-2 bg-mission-gold rounded-full"></div>
+                              <span className="text-sm text-mission-gold font-medium">ROOT</span>
+                            </div>
+                          )}
                         </td>
                         <td className="py-4 px-6">
                           <span className="text-sm text-slate-300 max-w-xs truncate block">

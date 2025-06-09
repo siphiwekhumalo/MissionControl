@@ -60,6 +60,8 @@ export function useJWTAuth() {
       return response.json();
     },
     retry: false,
+    staleTime: 5 * 60 * 1000, // Cache user data for 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   const loginMutation = useMutation({

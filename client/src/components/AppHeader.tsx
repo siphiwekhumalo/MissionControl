@@ -20,7 +20,9 @@ export default function AppHeader() {
   const navItems = [
     { path: "/", label: "Dashboard", icon: "⚡" },
     { path: "/send-ping", label: "Send Ping", icon: "📡" },
+    { path: "/trails", label: "Mission Trails", icon: "🔗" },
     { path: "/all-pings", label: "All Pings", icon: "📊" },
+    { path: "/security", label: "Security Center", icon: "🛡️" },
   ];
 
   return (

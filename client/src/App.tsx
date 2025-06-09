@@ -9,6 +9,8 @@ import AuthPage from "@/pages/AuthPage";
 import Dashboard from "@/pages/Dashboard";
 import SendPing from "@/pages/SendPing";
 import AllPings from "@/pages/AllPings";
+import TrailView from "@/pages/TrailView";
+import SecurityDashboard from "@/pages/SecurityDashboard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function Router() {
@@ -41,6 +43,8 @@ function Router() {
           <Route path="/" component={Dashboard} />
           <Route path="/send-ping" component={SendPing} />
           <Route path="/all-pings" component={AllPings} />
+          <Route path="/trails" component={TrailView} />
+          <Route path="/security" component={SecurityDashboard} />
         </>
       )}
       <Route component={NotFound} />
