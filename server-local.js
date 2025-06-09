@@ -161,13 +161,17 @@ app.post('/api/pings', authenticate, async (req, res) => {
   try {
     const { latitude, longitude, message } = req.body;
     
-    const ping = await storage.createPing({
+    const ping = {
+      id: nextPingId++,
+      userId: req.userId,
       latitude,
       longitude,
       message: message || null,
-      userId: req.userId
-    });
+      parentPingId: null,
+      createdAt: new Date()
+    };
 
+    pings.push(ping);
     console.log(`[SECURITY] Agent ${req.userId} created transmission #${ping.id} at coordinates [${latitude}, ${longitude}]`);
     res.status(201).json(ping);
   } catch (error) {
@@ -178,7 +182,7 @@ app.post('/api/pings', authenticate, async (req, res) => {
 
 app.get('/api/pings', authenticate, async (req, res) => {
   try {
-    const userPings = await storage.getUserPings(req.userId);
+    const userPings = pings.filter(p => p.userId === req.userId);
     console.log(`[SECURITY] Agent ${req.userId} accessed ${userPings.length} transmissions at ${new Date().toISOString()}`);
     res.json(userPings);
   } catch (error) {
@@ -189,9 +193,13 @@ app.get('/api/pings', authenticate, async (req, res) => {
 
 app.get('/api/pings/latest', authenticate, async (req, res) => {
   try {
-    const latestPings = await storage.getLatestUserPings(req.userId, 3);
+    const userPings = pings
+      .filter(p => p.userId === req.userId)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 3);
+    
     console.log(`[SECURITY] Agent ${req.userId} accessed latest transmissions at ${new Date().toISOString()}`);
-    res.json(latestPings);
+    res.json(userPings);
   } catch (error) {
     console.error('Get latest pings error:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -203,7 +211,7 @@ app.post('/api/pings/:id', authenticate, async (req, res) => {
     const pingId = parseInt(req.params.id);
     const { latitude, longitude, message } = req.body;
     
-    const parentPing = await storage.getPingById(pingId);
+    const parentPing = pings.find(p => p.id === pingId);
     if (!parentPing) {
       return res.status(404).json({ message: 'Parent ping not found' });
     }
@@ -212,13 +220,17 @@ app.post('/api/pings/:id', authenticate, async (req, res) => {
       return res.status(403).json({ message: 'Access denied: Cannot respond to another agent\'s transmission' });
     }
 
-    const ping = await storage.respondToPing(pingId, {
+    const ping = {
+      id: nextPingId++,
+      userId: req.userId,
       latitude,
       longitude,
       message: message || null,
-      userId: req.userId
-    });
+      parentPingId: pingId,
+      createdAt: new Date()
+    };
 
+    pings.push(ping);
     console.log(`[SECURITY] Agent ${req.userId} responded to transmission #${pingId} with new transmission #${ping.id}`);
     res.status(201).json(ping);
   } catch (error) {
