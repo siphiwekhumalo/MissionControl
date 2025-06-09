@@ -241,11 +241,13 @@ export default function Dashboard() {
                               )}
                             </div>
                           </div>
-                          <button className="p-2 text-mission-silver/60 hover:text-mission-green transition-colors opacity-0 group-hover:opacity-100 rounded-lg hover:bg-mission-surface/50">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
-                            </svg>
-                          </button>
+                          <Link href={`/send-ping?parent=${ping.id}`}>
+                            <button className="p-2 text-mission-silver/60 hover:text-mission-green transition-colors opacity-0 group-hover:opacity-100 rounded-lg hover:bg-mission-surface/50">
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                              </svg>
+                            </button>
+                          </Link>
                         </div>
                       </div>
                     );

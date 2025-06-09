@@ -34,6 +34,16 @@ export default function SendPing() {
   const [message, setMessage] = useState("");
   const [parentPingId, setParentPingId] = useState<string>("");
 
+  // Check for parent parameter in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const parentId = urlParams.get('parent');
+    if (parentId) {
+      setPingType("response");
+      setParentPingId(parentId);
+    }
+  }, []);
+
   // Redirect to home if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
