@@ -1,296 +1,370 @@
+# MissionControl - James Bond Ping Transmission System
 
-A secure web application for coordinate-based ping transmission and tracking, built with a James Bond/MI6 aesthetic. Features user authentication, real-time ping creation, trail responses, and sophisticated Three.js background animations.
+A secure, spy-themed web application for mission tracking and communication, designed to provide an immersive intelligence operations experience with enhanced user interaction and dynamic mission management.
 
-## 🎯 Features
+![Security Status](https://img.shields.io/badge/Security-Classified-red)
+![Build Status](https://img.shields.io/badge/Build-Operational-green)
+![Agent Status](https://img.shields.io/badge/Agents-Active-blue)
 
-- **Secure Authentication**: Replit OAuth integration with session management
-- **Ping System**: Create new coordinate-based pings or respond to existing ones
-- **Real-time Dashboard**: View latest 3 pings with mission statistics
-- **Complete Ping History**: Searchable table with filtering capabilities
-- **Three.js Animations**: Unique background animations for each page
-  - Dashboard: Radar sweep animation
-  - Send Ping: Matrix rain effect
-  - All Pings: Particle field animation
-- **James Bond Aesthetic**: Glass morphism, gradient borders, and MI6-inspired design
+## 🎯 Mission Overview
 
-## 🛠 Tech Stack
+MissionControl is a sophisticated web application that allows intelligence agents to:
+- Send encrypted ping transmissions with GPS coordinates
+- Create interconnected mission trails through response networks
+- Monitor real-time security status and audit logs
+- Manage classified operations through a secure dashboard
 
-### Frontend
-- **React 18** with TypeScript
-- **Vite** for development and building
-- **TailwindCSS** for styling with custom James Bond theme
-- **Three.js** for 3D background animations
-- **TanStack React Query** for data fetching and caching
-- **Wouter** for client-side routing
-- **Shadcn/ui** component library
-- **React Hook Form** with Zod validation
+## 🛡️ Security Features
 
-### Backend
-- **Express.js** with TypeScript
-- **PostgreSQL** database with Drizzle ORM
-- **Replit Auth** (OpenID Connect) for authentication
-- **Session-based** authentication with database storage
-- **JWT token** refresh mechanism
+- **JWT Authentication**: Multi-layer token-based security system
+- **User Isolation**: Agents can only access their own transmissions
+- **Audit Logging**: Real-time security event monitoring
+- **Access Controls**: Ownership verification for all operations
+- **Secure Headers**: XSS protection and content security policies
+- **Encrypted Storage**: Persistent file-based storage with security audit trails
 
-## 📋 Prerequisites
+## 🚀 Quick Start
 
-- Node.js 18+ 
-- PostgreSQL database
-- Replit account (for authentication)
+### Prerequisites
 
-## 🚀 Local Development Setup
+- Node.js 18+ or 20+
+- npm or yarn package manager
 
-### 1. Clone and Install
+### Installation
 
-```bash
-git clone <repository-url>
-cd james-bond-ping-system
-npm install
-```
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd missioncontrol
+   ```
 
-### 2. Environment Variables
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Create a `.env` file in the root directory:
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-```env
-# Database Configuration
-DATABASE_URL=postgresql://username:password@localhost:5432/ping_system
-PGHOST=localhost
-PGPORT=5432
-PGUSER=your_username
-PGPASSWORD=your_password
-PGDATABASE=ping_system
+4. **Access the application**
+   - Open your browser to `http://localhost:5000`
+   - The app runs on a single port with both frontend and backend
 
-# Authentication
-SESSION_SECRET=your-super-secret-session-key-here
-REPL_ID=your-replit-app-id
-ISSUER_URL=https://replit.com/oidc
-REPLIT_DOMAINS=your-domain.replit.dev,localhost:5000
+## 🏗️ Architecture
 
-# Development
-NODE_ENV=development
-```
+### Technology Stack
 
-### 3. Database Setup
+**Frontend:**
+- React 18 with TypeScript
+- Vite for development and building
+- TailwindCSS for styling with custom Bond theme
+- Three.js for immersive 3D backgrounds
+- TanStack Query for data fetching and caching
+- Wouter for lightweight routing
+- Shadcn/ui components with custom styling
 
-#### Option A: Local PostgreSQL
-1. Install PostgreSQL locally
-2. Create a database named `ping_system`
-3. Update the `DATABASE_URL` in your `.env` file
+**Backend:**
+- Express.js with TypeScript
+- Custom JWT authentication system
+- File-based persistent storage
+- Compression middleware for performance
+- Security audit logging
 
-#### Option B: Replit Database (Recommended)
-1. Create a PostgreSQL database in your Replit project
-2. Use the provided `DATABASE_URL` environment variable
+**Key Features:**
+- Glass morphism UI design
+- Real-time security monitoring
+- Trail-based mission networks
+- Responsive design for all devices
 
-### 4. Database Schema
-
-Run the database migrations:
-
-```bash
-npm run db:push
-```
-
-This will create the necessary tables:
-- `users` - User authentication data
-- `pings` - Ping coordinates and messages
-- `sessions` - Session storage for authentication
-
-### 5. Authentication Setup
-
-#### Replit OAuth Configuration
-1. Go to your Replit project settings
-2. Navigate to "Secrets" tab
-3. Add the required environment variables
-4. Configure OAuth domains in your Replit account
-
-For local development, you may need to:
-1. Set up a local OAuth provider, or
-2. Use Replit's development environment
-3. Configure your local domain in `REPLIT_DOMAINS`
-
-### 6. Start Development Server
-
-```bash
-npm run dev
-```
-
-This starts both the frontend (Vite) and backend (Express) servers on port 5000.
-
-The application will be available at: `http://localhost:5000`
-
-## 📁 Project Structure
+### Project Structure
 
 ```
+missioncontrol/
 ├── client/                 # Frontend React application
 │   ├── src/
 │   │   ├── components/     # Reusable UI components
 │   │   │   ├── ui/         # Shadcn/ui components
 │   │   │   ├── AppHeader.tsx
-│   │   │   ├── ThreeBackground.tsx
-│   │   │   └── MobileNavigation.tsx
+│   │   │   ├── SecurityIndicator.tsx
+│   │   │   └── ThreeBackground.tsx
 │   │   ├── hooks/          # Custom React hooks
 │   │   │   ├── useAuth.ts
+│   │   │   ├── useJWTAuth.ts
 │   │   │   └── use-toast.ts
 │   │   ├── lib/            # Utility functions
 │   │   │   ├── queryClient.ts
 │   │   │   ├── authUtils.ts
 │   │   │   └── utils.ts
-│   │   ├── pages/          # Page components
+│   │   ├── pages/          # Application pages
+│   │   │   ├── AuthPage.tsx
 │   │   │   ├── Dashboard.tsx
 │   │   │   ├── SendPing.tsx
 │   │   │   ├── AllPings.tsx
-│   │   │   ├── Landing.tsx
-│   │   │   └── not-found.tsx
-│   │   ├── App.tsx         # Main app component
-│   │   ├── main.tsx        # App entry point
-│   │   └── index.css       # Global styles & theme
+│   │   │   ├── TrailView.tsx
+│   │   │   └── SecurityDashboard.tsx
+│   │   ├── App.tsx         # Main application component
+│   │   ├── main.tsx        # Application entry point
+│   │   └── index.css       # Global styles
 │   └── index.html          # HTML template
 ├── server/                 # Backend Express application
-│   ├── db.ts              # Database connection
-│   ├── index.ts           # Server entry point
-│   ├── routes.ts          # API route definitions
-│   ├── storage.ts         # Database operations
-│   ├── replitAuth.ts      # Authentication middleware
-│   └── vite.ts            # Vite development setup
+│   ├── auth.ts             # JWT authentication system
+│   ├── db.ts               # Database configuration
+│   ├── routes.ts           # API route definitions
+│   ├── storage.ts          # Persistent storage implementation
+│   ├── index.ts            # Server entry point
+│   └── vite.ts             # Vite integration
 ├── shared/                 # Shared types and schemas
-│   └── schema.ts          # Drizzle database schema
-├── package.json           # Dependencies and scripts
-├── tailwind.config.ts     # TailwindCSS configuration
-├── vite.config.ts         # Vite configuration
-├── drizzle.config.ts      # Drizzle ORM configuration
-└── tsconfig.json          # TypeScript configuration
+│   └── schema.ts           # Data models and validation
+├── data/                   # Persistent storage files
+│   └── storage.json        # User and ping data
+└── package.json            # Dependencies and scripts
 ```
 
-## 🔗 API Endpoints
+## 🔐 Authentication System
 
-### Authentication
-- `GET /api/auth/user` - Get current user data
-- `GET /api/login` - Initiate OAuth login
-- `GET /api/logout` - Logout and clear session
-- `GET /api/callback` - OAuth callback handler
+The application uses a custom JWT-based authentication system:
 
-### Pings
-- `POST /api/pings` - Create a new ping
-- `GET /api/pings` - Get all user pings
-- `GET /api/pings/latest` - Get latest 3 pings
-- `POST /api/pings/:id` - Respond to a specific ping (create trail)
+### User Registration
+```bash
+POST /api/register
+Content-Type: application/json
 
-All ping endpoints require authentication.
-
-## 🎨 Styling & Theming
-
-### Custom Color Palette
-The app uses a custom James Bond-inspired color scheme:
-
-```css
-:root {
-  --mission-black: hsl(220, 13%, 8%);
-  --mission-dark: hsl(220, 13%, 12%);
-  --mission-surface: hsl(220, 13%, 16%);
-  --mission-secondary: hsl(220, 13%, 18%);
-  --mission-silver: hsl(220, 9%, 70%);
-  --mission-green: hsl(142, 76%, 36%);
-  --mission-blue: hsl(217, 91%, 60%);
+{
+  "username": "agent.bond",
+  "email": "james.bond@mi6.gov.uk",
+  "password": "classified007",
+  "firstName": "James",
+  "lastName": "Bond"
 }
 ```
 
-### Glass Morphism Effects
-Custom CSS classes for the signature glass effect:
-- `.glass` - Base glass morphism
-- `.gradient-border` - Animated gradient borders
-- `.glow-green` - Green glow effects
-- `.transition-all-smooth` - Smooth transitions
-
-## 🚀 Deployment
-
-### Production Build
-
+### User Login
 ```bash
-npm run build
+POST /api/login
+Content-Type: application/json
+
+{
+  "username": "agent.bond",
+  "password": "classified007"
+}
 ```
 
-### Replit Deployment
-1. Ensure all environment variables are set in Replit Secrets
-2. The app will automatically deploy when pushed to main branch
-3. Configure custom domain if needed
+Response includes JWT token for subsequent requests:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "username": "agent.bond",
+    "email": "james.bond@mi6.gov.uk",
+    "firstName": "James",
+    "lastName": "Bond"
+  }
+}
+```
 
-### Manual Deployment
-1. Build the application: `npm run build`
-2. Set production environment variables
-3. Deploy to your preferred hosting service
-4. Ensure PostgreSQL database is accessible
-5. Configure OAuth domains for production
+## 📡 API Endpoints
 
-## 🛠 Development Scripts
+### Authentication
+- `POST /api/register` - Register new agent
+- `POST /api/login` - Agent authentication
+- `GET /api/user` - Get current agent profile
+
+### Ping Operations
+- `POST /api/pings` - Create new transmission
+- `GET /api/pings` - Get all agent transmissions
+- `GET /api/pings/latest` - Get latest 3 transmissions
+- `POST /api/pings/:id` - Respond to existing transmission (create trail)
+
+### Example: Creating a Transmission
+```bash
+POST /api/pings
+Authorization: Bearer <jwt-token>
+Content-Type: application/json
+
+{
+  "latitude": "51.5074",
+  "longitude": "-0.1278",
+  "message": "Agent in position at target location"
+}
+```
+
+### Example: Responding to a Transmission
+```bash
+POST /api/pings/5
+Authorization: Bearer <jwt-token>
+Content-Type: application/json
+
+{
+  "latitude": "51.5085",
+  "longitude": "-0.1290",
+  "message": "Surveillance confirmed, proceeding to extraction point"
+}
+```
+
+## 🎨 Styling System
+
+The application uses a custom James Bond-inspired theme:
+
+### Color Palette
+```css
+:root {
+  --mission-dark: hsl(220, 15%, 8%);        /* Deep navy background */
+  --mission-surface: hsl(220, 10%, 15%);    /* Surface elements */
+  --mission-green: hsl(142, 76%, 36%);      /* Primary accent */
+  --mission-blue: hsl(217, 91%, 60%);       /* Secondary accent */
+  --mission-gold: hsl(45, 93%, 58%);        /* Warning/highlight */
+  --mission-silver: hsl(220, 10%, 60%);     /* Muted text */
+  --mission-navy: hsl(217, 32%, 35%);       /* Dark blue elements */
+}
+```
+
+### Custom Components
+- Glass morphism effects with backdrop blur
+- Gradient borders and hover animations
+- Three.js animated backgrounds (particles, radar, matrix)
+- Custom security badges and indicators
+
+## 🔧 Development
+
+### Available Scripts
 
 ```bash
-# Start development server
+# Start development server (frontend + backend)
 npm run dev
 
 # Build for production
 npm run build
 
-# Push database schema changes
+# Preview production build
+npm run preview
+
+# Run type checking
+npm run type-check
+
+# Database operations (if using Drizzle)
 npm run db:push
-
-# Generate database migrations
 npm run db:generate
-
-# Run TypeScript type checking
-npx tsc --noEmit
-
-# Lint code
-npx eslint client/src server/
+npm run db:migrate
 ```
 
-## 🔒 Security Considerations
+### Environment Variables
 
-1. **Environment Variables**: Never commit `.env` files
-2. **Session Security**: Uses secure HTTP-only cookies
-3. **Database Security**: All queries use parameterized statements
-4. **Authentication**: JWT tokens with refresh mechanism
-5. **CORS**: Configured for specific domains only
+Create a `.env` file in the root directory:
 
-## 🐛 Troubleshooting
+```env
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-here
+
+# Session Configuration  
+SESSION_SECRET=your-session-secret-here
+
+# Development
+NODE_ENV=development
+PORT=5000
+```
+
+### Custom Development
+
+#### Adding New Pages
+1. Create page component in `client/src/pages/`
+2. Add route to `client/src/App.tsx`
+3. Update navigation in `client/src/components/AppHeader.tsx`
+
+#### Adding New API Endpoints
+1. Define route in `server/routes.ts`
+2. Add authentication middleware if needed
+3. Update storage interface in `server/storage.ts`
+4. Add types to `shared/schema.ts`
+
+#### Customizing Security
+- Modify authentication logic in `server/auth.ts`
+- Update audit logging in route handlers
+- Configure security headers in `server/routes.ts`
+
+## 🛠️ Troubleshooting
 
 ### Common Issues
 
-**Database Connection Errors**
-- Verify `DATABASE_URL` is correct
-- Ensure PostgreSQL is running
-- Check firewall settings
+**Port Already in Use**
+```bash
+# Kill process on port 5000
+npx kill-port 5000
+```
 
 **Authentication Issues**
-- Verify `REPLIT_DOMAINS` includes your current domain
-- Check `SESSION_SECRET` is set
-- Ensure OAuth app is properly configured
+- Check JWT_SECRET environment variable
+- Verify token expiration (24 hours default)
+- Clear localStorage and re-authenticate
 
-**Build Errors**
-- Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
-- Check TypeScript errors: `npx tsc --noEmit`
+**Storage Issues**
+- Check `data/storage.json` file permissions
+- Verify file path accessibility
+- Review storage audit logs
 
-**Animation Performance**
-- Three.js animations may be intensive on older devices
-- Consider reducing particle counts in `ThreeBackground.tsx`
+**Build Issues**
+```bash
+# Clear node modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
 
-## 📝 Contributing
+### Performance Optimization
+
+The application includes several performance optimizations:
+- Response compression (gzip)
+- Intelligent caching with private headers
+- Debounced file I/O operations
+- Query result caching
+- Optimized bundle splitting
+
+## 🔍 Security Audit Logs
+
+Monitor security events in real-time through the console:
+
+```
+[SECURITY] Agent 2 authenticated from 172.31.128.46 at 2025-06-09T20:21:23.007Z
+[SECURITY] Agent 2 accessed 5 transmissions at 2025-06-09T20:21:23.364Z
+[SECURITY] Agent 2 created transmission #7 at coordinates [35.7208, 164.0319]
+[SECURITY] Agent 2 responded to transmission #7 with new transmission #8
+```
+
+Access the Security Dashboard at `/security` for comprehensive monitoring.
+
+## 📱 Features
+
+### Core Functionality
+- **Agent Dashboard**: Mission overview with statistics
+- **Send Ping**: Create new transmissions with coordinates
+- **All Pings**: View all transmissions with security indicators
+- **Mission Trails**: Interactive trail visualization and extension
+- **Security Center**: Real-time security monitoring and audit logs
+
+### Advanced Features
+- **Trail Networks**: Create branching response chains
+- **Visual Security**: Classification indicators for all transmissions  
+- **Real-time Updates**: Live data synchronization
+- **Responsive Design**: Mobile and desktop optimized
+- **3D Backgrounds**: Immersive Three.js animations
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/new-feature`
-3. Commit changes: `git commit -am 'Add new feature'`
-4. Push to branch: `git push origin feature/new-feature`
-5. Submit a pull request
+2. Create feature branch (`git checkout -b feature/new-mission`)
+3. Commit changes (`git commit -m 'Add new mission capability'`)
+4. Push to branch (`git push origin feature/new-mission`)
+5. Create Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🎯 Mission Briefing
-
-Welcome to the secure ping transmission system, Agent. Your mission, should you choose to accept it, is to maintain operational security while tracking coordinate-based transmissions across global networks. The fate of the mission depends on your discretion.
-
-*This message will self-destruct in 5 seconds... just kidding, it's a README file.*
+This project is classified under MI6 security protocols. Unauthorized access is prohibited.
 
 ---
 
-**Built with 💚 for the MI6 Operations Division**
+**Mission Status**: Operational ✅  
+**Security Level**: Classified 🔴  
+**Agent Access**: Authorized Personnel Only 🛡️
+
+*"The name's Bond... James Bond."*
