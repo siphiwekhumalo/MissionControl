@@ -258,80 +258,91 @@ export default function SendPing() {
 
                 {/* Coordinate Generation */}
                 <div>
-                  <Label className="block text-sm font-medium text-slate-300 mb-3">Mission Coordinates</Label>
-                  <div className="bg-mission-dark rounded-lg p-4 border border-slate-600">
-                    <div className="grid grid-cols-2 gap-4 mb-4">
+                  <Label className="bond-subtitle text-base font-medium text-white mb-4 block">Mission Coordinates</Label>
+                  <div className="glass gradient-border rounded-xl p-6">
+                    <div className="grid grid-cols-2 gap-4 mb-6">
                       <div>
-                        <Label className="block text-xs font-medium text-slate-400 mb-2">Latitude</Label>
+                        <Label className="block text-sm font-medium text-mission-silver mb-2">Latitude</Label>
                         <input
                           type="text"
                           value={latitude}
-                          readOnly
-                          className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-slate-200 font-mono text-sm"
+                          onChange={(e) => setLatitude(e.target.value)}
+                          className="w-full bg-mission-surface/50 border border-mission-surface hover:border-mission-green focus:border-mission-green rounded-xl px-4 py-3 text-white font-mono text-sm transition-all-smooth focus:outline-none"
                         />
                       </div>
                       <div>
-                        <Label className="block text-xs font-medium text-slate-400 mb-2">Longitude</Label>
+                        <Label className="block text-sm font-medium text-mission-silver mb-2">Longitude</Label>
                         <input
                           type="text"
                           value={longitude}
-                          readOnly
-                          className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-slate-200 font-mono text-sm"
+                          onChange={(e) => setLongitude(e.target.value)}
+                          className="w-full bg-mission-surface/50 border border-mission-surface hover:border-mission-green focus:border-mission-green rounded-xl px-4 py-3 text-white font-mono text-sm transition-all-smooth focus:outline-none"
                         />
                       </div>
                     </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={generateCoordinates}
-                      className="text-mission-green hover:text-emerald-400 text-sm font-medium p-0 h-auto"
-                    >
-                      <i className="fas fa-dice mr-2"></i>
-                      Generate New Coordinates
-                    </Button>
+                    <div className="flex justify-center">
+                      <Button
+                        type="button"
+                        onClick={generateCoordinates}
+                        className="bg-mission-blue/20 hover:bg-mission-blue/30 border border-mission-blue/50 hover:border-mission-blue text-mission-blue hover:text-white rounded-xl px-6 py-2 transition-all-smooth"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        Generate New Coordinates
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
                 {/* Optional Message */}
                 <div>
-                  <Label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">
+                  <Label htmlFor="message" className="bond-subtitle text-base font-medium text-white mb-4 block">
                     Mission Notes (Optional)
                   </Label>
-                  <Textarea
-                    id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Add any mission-specific notes..."
-                    className="bg-mission-dark border-slate-600 text-slate-50 placeholder-slate-500 focus:border-mission-green"
-                    rows={3}
-                  />
+                  <div className="glass gradient-border rounded-xl p-1">
+                    <Textarea
+                      id="message"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Add any mission-specific notes..."
+                      className="bg-mission-surface/50 border-0 text-white placeholder-mission-silver/60 focus:border-mission-green rounded-xl resize-none transition-all-smooth"
+                      rows={4}
+                    />
+                  </div>
                 </div>
 
                 {/* Submit Actions */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <div className="flex flex-col sm:flex-row gap-4 pt-6">
                   <Button
                     type="submit"
                     disabled={sendPingMutation.isPending}
-                    className="flex-1 bg-mission-green hover:bg-emerald-600 text-white font-medium py-3 px-6"
+                    className="flex-1 bg-gradient-to-r from-mission-green to-emerald-600 hover:from-emerald-600 hover:to-mission-green text-white font-medium py-4 px-8 rounded-xl transition-all-smooth glow-green-subtle shadow-lg"
                   >
                     {sendPingMutation.isPending ? (
                       <>
-                        <i className="fas fa-spinner fa-spin mr-2"></i>
+                        <svg className="w-4 h-4 mr-2 animate-spin" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6z"/>
+                        </svg>
                         Transmitting...
                       </>
                     ) : (
                       <>
-                        <i className="fas fa-paper-plane mr-2"></i>
+                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
                         Transmit Ping
                       </>
                     )}
                   </Button>
                   <Button
                     type="button"
-                    variant="outline"
                     onClick={() => setLocation("/")}
-                    className="px-6 py-3 border-slate-600 text-slate-300 hover:text-slate-50 hover:border-slate-500"
+                    className="px-8 py-4 bg-gradient-to-r from-red-600/20 to-red-700/20 border border-red-600/50 hover:border-red-500 text-red-400 hover:text-red-300 rounded-xl transition-all-smooth hover:bg-red-600/30"
                   >
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
                     Cancel
                   </Button>
                 </div>
