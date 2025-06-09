@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MissionControl - Agent Login</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #1a1a2e, #16213e); 
+            color: white; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 400px; 
+            margin: 50px auto; 
+            padding: 30px; 
+            background: rgba(255,255,255,0.1); 
+            border-radius: 10px; 
+            backdrop-filter: blur(10px); 
+        }
+        h1 { text-align: center; color: #00ff88; }
+        input { 
+            width: 100%; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #333; 
+            border-radius: 5px; 
+            background: rgba(255,255,255,0.1); 
+            color: white; 
+        }
+        button { 
+            width: 100%; 
+            padding: 12px; 
+            background: #00ff88; 
+            color: black; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: bold; 
+        }
+        button:hover { background: #00cc66; }
+        .result { margin-top: 20px; padding: 10px; border-radius: 5px; }
+        .success { background: rgba(0,255,136,0.2); }
+        .error { background: rgba(255,0,0,0.2); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕴️ MissionControl</h1>
+        <h2>Agent Authentication</h2>
+        
+        <div id="registerForm">
+            <h3>Register New Agent</h3>
+            <input type="text" id="regUsername" placeholder="Username" />
+            <input type="email" id="regEmail" placeholder="Email (optional)" />
+            <input type="password" id="regPassword" placeholder="Password" />
+            <input type="text" id="regFirstName" placeholder="First Name (optional)" />
+            <input type="text" id="regLastName" placeholder="Last Name (optional)" />
+            <button onclick="register()">Register Agent</button>
+        </div>
+        
+        <hr style="margin: 30px 0; border-color: #333;">
+        
+        <div id="loginForm">
+            <h3>Agent Login</h3>
+            <input type="text" id="loginUsername" placeholder="Username" />
+            <input type="password" id="loginPassword" placeholder="Password" />
+            <button onclick="login()">Access System</button>
+        </div>
+        
+        <div id="result"></div>
+        
+        <div id="dashboard" style="display: none;">
+            <h3>Mission Dashboard</h3>
+            <button onclick="createPing()">Send Ping</button>
+            <button onclick="getPings()">View Transmissions</button>
+            <div id="pingData"></div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = '';
+        
+        async function register() {
+            const data = {
+                username: document.getElementById('regUsername').value,
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
+                firstName: document.getElementById('regFirstName').value,
+                lastName: document.getElementById('regLastName').value
+            };
+            
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    authToken = result.token;
+                    showResult('Agent registered successfully!', 'success');
+                    showDashboard();
+                } else {
+                    showResult('Registration failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showResult('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function login() {
+            const data = {
+                username: document.getElementById('loginUsername').value,
+                password: document.getElementById('loginPassword').value
+            };
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    authToken = result.token;
+                    showResult('Authentication successful!', 'success');
+                    showDashboard();
+                } else {
+                    showResult('Login failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showResult('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function createPing() {
+            const lat = (Math.random() * 180 - 90).toFixed(4);
+            const lng = (Math.random() * 360 - 180).toFixed(4);
+            
+            try {
+                const response = await fetch('/api/pings', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + authToken
+                    },
+                    body: JSON.stringify({
+                        latitude: lat,
+                        longitude: lng,
+                        message: 'Mission coordinates transmitted'
+                    })
+                });
+                
+                const result = await response.json();
+                showResult('Ping transmitted successfully!', 'success');
+                getPings();
+            } catch (error) {
+                showResult('Error: ' + error.message, 'error');
+            }
+        }
+        
+        async function getPings() {
+            try {
+                const response = await fetch('/api/pings', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                
+                const pings = await response.json();
+                const pingHtml = pings.map(p => 
+                    `<div style="border: 1px solid #333; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                        <strong>Ping #${p.id}</strong><br>
+                        Coordinates: ${p.latitude}, ${p.longitude}<br>
+                        Message: ${p.message || 'None'}<br>
+                        Time: ${new Date(p.createdAt).toLocaleString()}
+                    </div>`
+                ).join('');
+                
+                document.getElementById('pingData').innerHTML = pingHtml;
+            } catch (error) {
+                showResult('Error: ' + error.message, 'error');
+            }
+        }
+        
+        function showResult(message, type) {
+            const result = document.getElementById('result');
+            result.innerHTML = message;
+            result.className = 'result ' + type;
+        }
+        
+        function showDashboard() {
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
