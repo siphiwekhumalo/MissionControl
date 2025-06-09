@@ -1,0 +1,55 @@
+James Bond Technical Assessment Brief
+
+This document outlines the technical assessment for developers interested in joining our
+team. Candidates are expected to build a simple web application using a frontend and
+backend of their choice.
+
+Test Concept: James Bond Ping Mission
+
+James Bond must send out a ping via a secure web application. These pings represent
+messages with coordinate data and can only be viewed by the user who sent them and
+administrators. James may respond to an existing ping with another, forming a trail of
+related pings.
+
+Technical Requirements
+
+Frontend
+The frontend must consist of three pages:
+1. 1. Dashboard Page
+ - Displays a navigation section
+- Shows the latest three pings from the logged-in user
+- Includes links to the &quot;Send Ping&quot; and &quot;All Pings&quot; pages
+2. 2. Send Ping Page
+ - Contains a button to send a new ping
+- Each ping includes random coordinates (latitude and longitude)
+- Allows optional response to the most previous ping only (create a ping trail)
+3. 3. All Pings Page
+ - Displays a table of all pings sent by the logged-in user
+- Each entry should include coordinates, timestamp, and parent ping (if any)
+
+Backend
+
+The backend must include:
+ Authentication
+ - Users must be able to sign up and log in securely
+- JWT or session-based auth accepted
+ Ping API
+ - POST /pings: Create a new ping
+- GET /pings: Get all pings for the logged-in user
+- GET /pings/latest: Retrieve the latest three pings
+- POST /pings/:id: Respond to a specific ping (trail creation)
+Only authenticated users should be able to access ping-related routes.
+
+Submission Instructions
+
+- Please upload your code to a public or private Git repository (GitHub, GitLab, etc.).
+- Share the repository link or download in your submission.
+- Ensure the README includes clear setup instructions for both frontend and backend.
+
+Evaluation Criteria
+
+- Code clarity and structure
+- Proper separation of concerns
+- Authentication implementation
+- Correct usage of API endpoints
+- UX and flow of the frontend
