@@ -139,6 +139,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/pings/latest', authenticate, async (req: AuthRequest, res) => {
     try {
+      res.set('Cache-Control', 'public, max-age=30'); // Cache for 30 seconds
       const pings = await storage.getLatestUserPings(req.userId!, 3);
       res.json(pings);
     } catch (error) {
