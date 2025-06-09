@@ -137,12 +137,20 @@ export default function SendPing() {
       return;
     }
 
-    sendPingMutation.mutate({
+    const pingData: any = {
       latitude,
       longitude,
-      message: message || null,
-      parentPingId: parentPingId ? parseInt(parentPingId) : null,
-    });
+    };
+    
+    if (message) {
+      pingData.message = message;
+    }
+    
+    if (parentPingId) {
+      pingData.parentPingId = parseInt(parentPingId);
+    }
+    
+    sendPingMutation.mutate(pingData);
   };
 
   const formatTimeAgo = (dateString: string) => {
