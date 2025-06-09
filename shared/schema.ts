@@ -34,7 +34,7 @@ export interface Ping {
 export const insertPingSchema = z.object({
   latitude: z.string().min(1, "Latitude is required"),
   longitude: z.string().min(1, "Longitude is required"),
-  message: z.string().nullable().optional(),
+  message: z.string().optional().transform(val => val || null),
 });
 
 export type InsertPing = z.infer<typeof insertPingSchema>;
