@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -188,7 +187,6 @@ export default function SendPing() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="glass gradient-border rounded-2xl p-8">
               <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Transmission Type Selection */}
                 <div>
@@ -249,23 +247,17 @@ export default function SendPing() {
                 {/* Parent Ping Selection */}
                 {pingType === "response" && (
                   <div>
-                    <Label htmlFor="parentPing" className="bond-subtitle text-base font-medium text-white mb-3 block">
-                      Select Previous Transmission
+                    <Label htmlFor="parentPing" className="block text-sm font-medium text-slate-300 mb-2">
+                      Select Previous Ping to Respond To
                     </Label>
                     <Select value={parentPingId} onValueChange={setParentPingId}>
-                      <SelectTrigger className="glass gradient-border bg-mission-surface/30 border-0 text-white placeholder:text-mission-silver focus:glow-blue">
-                        <SelectValue placeholder="Select a ping to respond to..." />
+                      <SelectTrigger className="w-full bg-mission-dark border-slate-600 text-slate-50">
+                        <SelectValue placeholder="Select a ping..." />
                       </SelectTrigger>
-                      <SelectContent className="glass bg-mission-dark/95 border-mission-surface backdrop-blur-xl">
+                      <SelectContent className="bg-mission-dark border-slate-600">
                         {allPings?.map((ping: Ping) => (
-                          <SelectItem key={ping.id} value={ping.id.toString()} className="text-white hover:bg-mission-surface/50">
-                            <div className="flex items-center space-x-3">
-                              <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-mission-navy/20 text-mission-navy border border-mission-navy/30">
-                                #{ping.id.toString().padStart(3, '0')}
-                              </span>
-                              <span className="text-mission-silver">•</span>
-                              <span className="text-sm">{formatTimeAgo(ping.createdAt)}</span>
-                            </div>
+                          <SelectItem key={ping.id} value={ping.id.toString()}>
+                            Ping #{ping.id.toString().padStart(3, '0')} - {formatTimeAgo(ping.createdAt)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -275,27 +267,25 @@ export default function SendPing() {
 
                 {/* Coordinate Generation */}
                 <div>
-                  <Label className="bond-subtitle text-base font-medium text-white mb-3 block">Mission Coordinates</Label>
-                  <div className="glass gradient-border rounded-xl p-6 bg-mission-surface/20">
+                  <Label className="block text-sm font-medium text-slate-300 mb-3">Mission Coordinates</Label>
+                  <div className="bg-mission-dark rounded-lg p-4 border border-slate-600">
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
-                        <Label className="block text-xs font-medium text-mission-silver mb-2 uppercase tracking-wider">Latitude</Label>
+                        <Label className="block text-xs font-medium text-slate-400 mb-2">Latitude</Label>
                         <input
                           type="text"
                           value={latitude}
                           onChange={(e) => setLatitude(e.target.value)}
-                          className="w-full glass bg-mission-dark/50 border-0 rounded-lg px-4 py-3 text-white font-mono text-sm placeholder:text-mission-silver/50 focus:glow-green transition-all-smooth"
-                          placeholder="0.0000"
+                          className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-slate-200 font-mono text-sm"
                         />
                       </div>
                       <div>
-                        <Label className="block text-xs font-medium text-mission-silver mb-2 uppercase tracking-wider">Longitude</Label>
+                        <Label className="block text-xs font-medium text-slate-400 mb-2">Longitude</Label>
                         <input
                           type="text"
                           value={longitude}
                           onChange={(e) => setLongitude(e.target.value)}
-                          className="w-full glass bg-mission-dark/50 border-0 rounded-lg px-4 py-3 text-white font-mono text-sm placeholder:text-mission-silver/50 focus:glow-green transition-all-smooth"
-                          placeholder="0.0000"
+                          className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-slate-200 font-mono text-sm"
                         />
                       </div>
                     </div>
@@ -303,11 +293,9 @@ export default function SendPing() {
                       type="button"
                       variant="ghost"
                       onClick={generateCoordinates}
-                      className="text-mission-green hover:text-emerald-400 hover:bg-mission-green/10 text-sm font-medium rounded-lg transition-all-smooth group"
+                      className="text-mission-green hover:text-emerald-400 text-sm font-medium p-0 h-auto"
                     >
-                      <svg className="w-4 h-4 mr-2 group-hover:rotate-180 transition-transform duration-500" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
+                      <i className="fas fa-dice mr-2"></i>
                       Generate New Coordinates
                     </Button>
                   </div>
@@ -315,17 +303,16 @@ export default function SendPing() {
 
                 {/* Optional Message */}
                 <div>
-                  <Label htmlFor="message" className="bond-subtitle text-base font-medium text-white mb-3 block">
-                    Mission Notes
-                    <span className="text-mission-silver/60 text-sm font-normal ml-2">(Optional)</span>
+                  <Label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">
+                    Mission Notes (Optional)
                   </Label>
                   <Textarea
                     id="message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Add any mission-specific notes or tactical information..."
-                    className="glass gradient-border bg-mission-surface/20 border-0 text-white placeholder:text-mission-silver/50 focus:glow-green resize-none transition-all-smooth"
-                    rows={4}
+                    placeholder="Add any mission-specific notes..."
+                    className="bg-mission-dark border-slate-600 text-slate-50 placeholder-slate-500 focus:border-mission-green"
+                    rows={3}
                   />
                 </div>
 
@@ -334,20 +321,16 @@ export default function SendPing() {
                   <Button
                     type="submit"
                     disabled={sendPingMutation.isPending}
-                    className="flex-1 bg-gradient-to-r from-mission-green to-emerald-500 hover:from-emerald-500 hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group"
+                    className="flex-1 bg-mission-green hover:bg-emerald-600 text-white font-medium py-3 px-6"
                   >
                     {sendPingMutation.isPending ? (
                       <>
-                        <svg className="w-5 h-5 mr-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
+                        <i className="fas fa-spinner fa-spin mr-2"></i>
                         Transmitting...
                       </>
                     ) : (
                       <>
-                        <svg className="w-5 h-5 mr-3 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
-                        </svg>
+                        <i className="fas fa-paper-plane mr-2"></i>
                         Transmit Ping
                       </>
                     )}
@@ -356,70 +339,54 @@ export default function SendPing() {
                     type="button"
                     variant="outline"
                     onClick={() => setLocation("/")}
-                    className="px-6 py-4 glass gradient-border bg-mission-surface/20 border-0 text-mission-silver hover:text-white hover:bg-mission-surface/40 rounded-xl transition-all-smooth"
+                    className="px-6 py-3 border-slate-600 text-slate-300 hover:text-slate-50 hover:border-slate-500"
                   >
-                    Cancel Mission
+                    Cancel
                   </Button>
                 </div>
               </form>
-            </div>
           </div>
 
           {/* Transmission Preview */}
           <div>
-            <div className="glass gradient-border rounded-2xl p-6 bg-mission-surface/20 sticky top-24">
-              <h3 className="bond-title text-xl font-light text-white mb-4">Transmission Preview</h3>
+            <div className="bg-mission-secondary rounded-lg p-6 border border-slate-700 sticky top-24">
+              <h3 className="text-lg font-semibold text-slate-50 mb-4">Transmission Preview</h3>
               
               <div className="space-y-4">
-                <div className="glass rounded-xl p-4 bg-mission-dark/40">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <div className="w-2 h-2 bg-mission-green rounded-full pulse-glow"></div>
-                    <span className="text-sm font-medium text-mission-green uppercase tracking-wider">Preparing</span>
+                <div className="bg-mission-dark rounded-lg p-4">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <div className="w-2 h-2 bg-mission-green rounded-full animate-pulse"></div>
+                    <span className="text-sm font-medium text-mission-green">PREPARING</span>
                   </div>
                   
                   <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-mission-silver">Agent:</span>
-                      <span className="text-white font-medium">
+                    <div>
+                      <span className="text-slate-400">Agent:</span>
+                      <span className="text-slate-200 ml-2">
                         {user?.firstName || user?.lastName 
                           ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
                           : "Agent 007"
                         }
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-mission-silver">Coordinates:</span>
-                      <span className="text-mission-green font-mono text-xs">{latitude || "0.0000"}, {longitude || "0.0000"}</span>
+                    <div>
+                      <span className="text-slate-400">Coordinates:</span>
+                      <span className="text-slate-200 ml-2 font-mono">{latitude}, {longitude}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-mission-silver">Timestamp:</span>
-                      <span className="text-white">Now</span>
+                    <div>
+                      <span className="text-slate-400">Timestamp:</span>
+                      <span className="text-slate-200 ml-2">Now</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-mission-silver">Protocol:</span>
-                      <span className={`${pingType === "new" ? "text-mission-green" : "text-mission-blue"} font-medium`}>
-                        {pingType === "new" ? "New Trail" : "Response"}
-                      </span>
+                    <div>
+                      <span className="text-slate-400">Type:</span>
+                      <span className="text-slate-200 ml-2">{pingType === "new" ? "New Trail" : "Response"}</span>
                     </div>
-                    {pingType === "response" && parentPingId && (
-                      <div className="flex justify-between">
-                        <span className="text-mission-silver">Parent:</span>
-                        <span className="text-mission-navy font-mono">#{parentPingId.padStart(3, '0')}</span>
-                      </div>
-                    )}
                   </div>
                 </div>
                 
-                <div className="glass rounded-xl p-4 bg-mission-surface/10 border border-mission-green/20">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <svg className="w-4 h-4 text-mission-green" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
-                    </svg>
-                    <span className="text-xs font-medium text-mission-green uppercase tracking-wider">Encryption Status</span>
-                  </div>
-                  <p className="text-xs text-mission-silver leading-relaxed">
-                    All transmissions are encrypted using quantum-resistant algorithms. Only authorized personnel with proper clearance can decrypt this data.
-                  </p>
+                <div className="text-xs text-slate-500 bg-slate-800/50 rounded p-3">
+                  <i className="fas fa-shield-alt mr-2"></i>
+                  All transmissions are encrypted and secure. Only you and authorized personnel can view this data.
                 </div>
               </div>
             </div>
