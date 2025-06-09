@@ -91,7 +91,7 @@ export default function Dashboard() {
       <ThreeBackground scene="radar" className="z-0" />
       
       {/* Hexagon overlay pattern */}
-      <div className="absolute inset-0 hexagon-pattern opacity-20 z-10"></div>
+      <div className="absolute inset-0 hexagon-pattern opacity-20 z-10 pointer-events-none"></div>
       
       <AppHeader />
       
@@ -182,7 +182,7 @@ export default function Dashboard() {
                     <h3 className="bond-title text-xl font-light text-white">Intelligence Feed</h3>
                     <p className="bond-subtitle text-mission-silver text-sm">Recent transmission activity</p>
                   </div>
-                  <Link href="/all-pings" className="group inline-flex items-center space-x-2 px-4 py-2 bg-mission-green/20 hover:bg-mission-green/30 text-mission-green rounded-lg transition-all-smooth glow-green cursor-pointer">
+                  <Link href="/all-pings" className="group inline-flex items-center space-x-2 px-4 py-2 bg-mission-green/20 hover:bg-mission-green/30 text-mission-green rounded-lg transition-all-smooth glow-green cursor-pointer pointer-events-auto relative z-30">
                     <span className="text-sm font-medium">View Archive</span>
                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
@@ -273,7 +273,7 @@ export default function Dashboard() {
                     </div>
                     <h4 className="text-lg font-medium text-white mb-2">No Intelligence Yet</h4>
                     <p className="text-mission-silver text-sm mb-4">Begin your first transmission to establish communication</p>
-                    <Link href="/send-ping" className="inline-flex items-center justify-center bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium px-6 py-2 rounded-lg transition-all-smooth cursor-pointer">
+                    <Link href="/send-ping" className="inline-flex items-center justify-center bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium px-6 py-2 rounded-lg transition-all-smooth cursor-pointer pointer-events-auto relative z-30">
                       Initialize Transmission
                     </Link>
                   </div>
@@ -290,13 +290,13 @@ export default function Dashboard() {
                 <p className="bond-subtitle text-mission-silver text-sm">Tactical operations</p>
               </div>
               <div className="space-y-4">
-                <Link href="/send-ping" className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group cursor-pointer flex items-center justify-center space-x-3">
+                <Link href="/send-ping" className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 px-6 rounded-xl transition-all-smooth glow-green group cursor-pointer flex items-center justify-center space-x-3 pointer-events-auto relative z-30">
                   <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                   </svg>
                   <span>Initiate Transmission</span>
                 </Link>
-                <Link href="/all-pings" className="w-full bg-mission-surface/50 hover:bg-mission-surface border border-mission-surface hover:border-mission-gold text-mission-silver hover:text-white font-medium py-3 px-6 rounded-xl transition-all-smooth cursor-pointer flex items-center justify-center space-x-3">
+                <Link href="/all-pings" className="w-full bg-mission-surface/50 hover:bg-mission-surface border border-mission-surface hover:border-mission-gold text-mission-silver hover:text-white font-medium py-3 px-6 rounded-xl transition-all-smooth cursor-pointer flex items-center justify-center space-x-3 pointer-events-auto relative z-30">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
                   </svg>
