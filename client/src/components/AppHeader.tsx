@@ -1,14 +1,14 @@
-import { useAuth } from "@/hooks/useAuth";
+import { useJWTAuth } from "@/hooks/useJWTAuth";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 
 export default function AppHeader() {
-  const { user } = useAuth();
+  const { user, logout } = useJWTAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    window.location.href = "/api/logout";
+    logout();
   };
 
   const isActive = (path: string) => {
@@ -68,7 +68,7 @@ export default function AppHeader() {
               <div className="flex items-center space-x-3">
                 <div className="relative">
                   <img
-                    src={user?.profileImageUrl || "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&h=256"}
+                    src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&h=256"
                     alt="Agent profile"
                     className="w-8 h-8 rounded-full object-cover border-2 border-mission-green/50"
                   />
@@ -78,7 +78,7 @@ export default function AppHeader() {
                   <p className="text-sm font-medium text-white">
                     {user?.firstName || user?.lastName 
                       ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
-                      : "Agent 007"
+                      : user?.username || "Agent 007"
                     }
                   </p>
                   <p className="text-xs text-mission-silver">

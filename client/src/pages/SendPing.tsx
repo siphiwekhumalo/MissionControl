@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useJWTAuth } from "@/hooks/useJWTAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -24,7 +24,7 @@ interface Ping {
 
 export default function SendPing() {
   const { toast } = useToast();
-  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, user } = useJWTAuth();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
@@ -44,20 +44,12 @@ export default function SendPing() {
     }
   }, []);
 
-  // Redirect to home if not authenticated
+  // Redirect to auth if not authenticated (but wait for auth to complete)
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
+      setLocation("/auth");
     }
-  }, [isAuthenticated, authLoading, toast]);
+  }, [isAuthenticated, authLoading, setLocation]);
 
   const { data: allPings } = useQuery({
     queryKey: ["/api/pings"],
@@ -145,12 +137,20 @@ export default function SendPing() {
       return;
     }
 
-    sendPingMutation.mutate({
+    const pingData: any = {
       latitude,
       longitude,
-      message: message || undefined,
-      parentPingId: parentPingId ? parseInt(parentPingId) : undefined,
-    });
+    };
+    
+    if (message) {
+      pingData.message = message;
+    }
+    
+    if (parentPingId) {
+      pingData.parentPingId = parseInt(parentPingId);
+    }
+    
+    sendPingMutation.mutate(pingData);
   };
 
   const formatTimeAgo = (dateString: string) => {
@@ -255,7 +255,7 @@ export default function SendPing() {
                         <SelectValue placeholder="Select a ping..." />
                       </SelectTrigger>
                       <SelectContent className="bg-mission-dark border-slate-600">
-                        {allPings?.map((ping: Ping) => (
+                        {Array.isArray(allPings) && allPings.map((ping: Ping) => (
                           <SelectItem key={ping.id} value={ping.id.toString()}>
                             Ping #{ping.id.toString().padStart(3, '0')} - {formatTimeAgo(ping.createdAt)}
                           </SelectItem>
@@ -363,9 +363,9 @@ export default function SendPing() {
                     <div>
                       <span className="text-slate-400">Agent:</span>
                       <span className="text-slate-200 ml-2">
-                        {user?.firstName || user?.lastName 
+                        {user && (user.firstName || user.lastName)
                           ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
-                          : "Agent 007"
+                          : user?.username || "Agent 007"
                         }
                       </span>
                     </div>

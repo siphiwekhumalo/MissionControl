@@ -13,10 +13,10 @@ export default function Landing() {
       <ThreeBackground scene="particles" className="z-0" />
       
       {/* Hexagon overlay pattern */}
-      <div className="absolute inset-0 hexagon-pattern opacity-30 z-10"></div>
+      <div className="absolute inset-0 hexagon-pattern opacity-30 z-10 pointer-events-none"></div>
       
       {/* Scan lines effect */}
-      <div className="absolute inset-0 scan-lines z-20"></div>
+      <div className="absolute inset-0 scan-lines z-20 pointer-events-none"></div>
       
       {/* Main content */}
       <div className="relative z-30 min-h-screen flex items-center justify-center px-4">
@@ -54,7 +54,7 @@ export default function Landing() {
                 
                 <Button 
                   onClick={handleLogin}
-                  className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 rounded-xl transition-all-smooth glow-green group"
+                  className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-medium py-4 rounded-xl transition-all-smooth glow-green group cursor-pointer pointer-events-auto relative z-40"
                 >
                   <svg className="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>

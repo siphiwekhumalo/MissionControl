@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useJWTAuth } from "@/hooks/useJWTAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import AppHeader from "@/components/AppHeader";
@@ -20,7 +20,7 @@ interface Ping {
 
 export default function AllPings() {
   const { toast } = useToast();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useJWTAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [trailFilter, setTrailFilter] = useState("all");
@@ -60,7 +60,7 @@ export default function AllPings() {
     return { status: "COMPLETED", color: "slate-500", pulse: false };
   };
 
-  const filteredPings = allPings?.filter((ping: Ping) => {
+  const filteredPings = Array.isArray(allPings) ? allPings.filter((ping: Ping) => {
     const matchesSearch = 
       ping.latitude.includes(searchTerm) ||
       ping.longitude.includes(searchTerm) ||
@@ -76,7 +76,7 @@ export default function AllPings() {
       (trailFilter === "responses" && ping.parentPingId);
 
     return matchesSearch && matchesStatus && matchesTrail;
-  }) || [];
+  }) : [];
 
   if (authLoading) {
     return (

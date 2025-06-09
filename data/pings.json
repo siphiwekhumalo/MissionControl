@@ -1,0 +1,14 @@
+{
+  "pings": [
+    {
+      "id": 1,
+      "userId": 1,
+      "latitude": "40.7128",
+      "longitude": "-74.0060",
+      "message": null,
+      "parentPingId": null,
+      "createdAt": "2025-06-09T19:51:05.860Z"
+    }
+  ],
+  "nextPingId": 2
+}
