@@ -1,17 +1,8 @@
 # Windows Setup Guide for MissionControl
 
-## Quick Start for Windows
+## Quick Start for Windows (Node.js v18 Compatible)
 
-### Option 1: Using cross-env (Recommended)
-```bash
-# Development
-npx cross-env NODE_ENV=development tsx server/index.ts
-
-# Production (after building)
-npx cross-env NODE_ENV=production node dist/index.js
-```
-
-### Option 2: Using Batch Files (Command Prompt)
+### Option 1: Using Batch Files (Command Prompt) - Recommended
 ```cmd
 # Development
 dev.bat
@@ -20,7 +11,7 @@ dev.bat
 start.bat
 ```
 
-### Option 3: Using PowerShell Scripts
+### Option 2: Using PowerShell Scripts  
 ```powershell
 # Development
 .\dev.ps1
@@ -29,18 +20,27 @@ start.bat
 .\start.ps1
 ```
 
-### Option 4: Manual Environment Variable Setting
+### Option 3: Manual Environment Variable Setting
 
 **Command Prompt:**
 ```cmd
 set NODE_ENV=development
-npx tsx server/index.ts
+node server-local.js
 ```
 
 **PowerShell:**
 ```powershell
 $env:NODE_ENV = "development"
-npx tsx server/index.ts
+node server-local.js
+```
+
+### Option 4: Using cross-env (Alternative)
+```bash
+# Development
+npx cross-env NODE_ENV=development node server-local.js
+
+# Production (after building)
+npx cross-env NODE_ENV=production node server-local.js
 ```
 
 ## Building for Production
