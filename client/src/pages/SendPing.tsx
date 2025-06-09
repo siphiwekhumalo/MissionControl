@@ -140,8 +140,8 @@ export default function SendPing() {
     sendPingMutation.mutate({
       latitude,
       longitude,
-      message: message || undefined,
-      parentPingId: parentPingId ? parseInt(parentPingId) : undefined,
+      message: message || null,
+      parentPingId: parentPingId ? parseInt(parentPingId) : null,
     });
   };
 
