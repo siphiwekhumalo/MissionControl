@@ -203,7 +203,7 @@ function animateRadar(scene: THREE.Scene) {
 // Matrix rain effect
 function setupMatrixRain(scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
   const columns = 80; // More columns for fuller screen
-  const dropSpeed = 0.15; // Slower speed
+  const dropSpeed = 0.03; // Much slower speed like particle animation
   
   for (let i = 0; i < columns; i++) {
     const geometry = new THREE.BufferGeometry();
@@ -220,7 +220,7 @@ function setupMatrixRain(scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
       positions[j * 3 + 2] = z;
       
       drops.push({ 
-        speed: Math.random() * dropSpeed + 0.05, // Slower base speed
+        speed: Math.random() * dropSpeed + 0.01, // Much slower base speed
         opacity: Math.random() * 0.8 + 0.2 // Varying opacity
       });
     }
@@ -232,7 +232,7 @@ function setupMatrixRain(scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
       color: 0x00ff88,
       size: Math.random() * 1.5 + 0.5, // Varying sizes
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.6, // Slightly more subtle
     });
     
     const points = new THREE.Points(geometry, material);
@@ -254,14 +254,14 @@ function animateMatrix(scene: THREE.Scene) {
         // Reset when drops fall off screen (expanded range)
         if (positions[i + 1] < -75) {
           positions[i + 1] = 75 + Math.random() * 20;
-          // Add slight horizontal drift
-          positions[i] += (Math.random() - 0.5) * 0.1;
+          // Add very subtle horizontal drift
+          positions[i] += (Math.random() - 0.5) * 0.02;
         }
       }
       
       child.geometry.attributes.position.needsUpdate = true;
-      // Slow rotation for extra depth
-      child.rotation.z += 0.0005;
+      // Very slow rotation for subtle depth
+      child.rotation.z += 0.0001;
     }
   });
 }
