@@ -1,42 +1,40 @@
 import { z } from "zod";
+import {
+  pgTable,
+  text,
+  varchar,
+  timestamp,
+  serial,
+  integer,
+} from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
 
-// User types for in-memory storage
-export interface User {
-  id: string;
-  username: string;
-  email: string | null;
-  password: string;
-  firstName: string | null;
-  lastName: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Database tables
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: varchar("username", { length: 50 }).unique().notNull(),
+  email: varchar("email", { length: 100 }).unique(),
+  password: text("password").notNull(),
+  firstName: varchar("first_name", { length: 50 }),
+  lastName: varchar("last_name", { length: 50 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
 
-export interface CreateUser {
-  username: string;
-  email?: string | null;
-  password: string;
-  firstName?: string | null;
-  lastName?: string | null;
-}
+export const pings = pgTable("pings", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  latitude: varchar("latitude", { length: 20 }).notNull(),
+  longitude: varchar("longitude", { length: 20 }).notNull(),
+  message: text("message"),
+  parentPingId: integer("parent_ping_id").references(() => pings.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
 
-export interface UpsertUser {
-  id: string;
-  email?: string | null;
-  firstName?: string | null;
-  lastName?: string | null;
-}
-
-// Ping types for in-memory storage
-export interface Ping {
-  id: number;
-  userId: string;
-  latitude: string;
-  longitude: string;
-  message: string | null;
-  parentPingId: number | null;
-  createdAt: Date;
-}
+// Types
+export type User = typeof users.$inferSelect;
+export type CreateUser = Omit<typeof users.$inferInsert, 'id' | 'createdAt' | 'updatedAt'>;
+export type Ping = typeof pings.$inferSelect;
 
 // Ping creation schema and types
 export const insertPingSchema = z.object({

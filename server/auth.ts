@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "mission-control-secret-key-2024";
 const JWT_EXPIRES_IN = "7d";
 
 export interface AuthRequest extends Request {
-  userId?: string;
+  userId?: number;
 }
 
 // Hash password
@@ -22,14 +22,14 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 // Generate JWT token
-export function generateToken(userId: string): string {
+export function generateToken(userId: number): string {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 }
 
 // Verify JWT token
-export function verifyToken(token: string): { userId: string } | null {
+export function verifyToken(token: string): { userId: number } | null {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
     return decoded;
   } catch (error) {
     return null;

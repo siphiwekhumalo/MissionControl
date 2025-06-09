@@ -1,101 +1,98 @@
 import {
+  users,
+  pings,
   type User,
   type CreateUser,
   type Ping,
   type InsertPing,
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User operations for JWT auth
-  getUser(id: string): Promise<User | undefined>;
+  getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: CreateUser): Promise<User>;
   
   // Ping operations
-  createPing(ping: InsertPing & { userId: string }): Promise<Ping>;
-  getUserPings(userId: string): Promise<Ping[]>;
-  getLatestUserPings(userId: string, limit: number): Promise<Ping[]>;
+  createPing(ping: InsertPing & { userId: number }): Promise<Ping>;
+  getUserPings(userId: number): Promise<Ping[]>;
+  getLatestUserPings(userId: number, limit: number): Promise<Ping[]>;
   getPingById(id: number): Promise<Ping | undefined>;
-  respondToPing(parentId: number, ping: InsertPing & { userId: string }): Promise<Ping>;
+  respondToPing(parentId: number, ping: InsertPing & { userId: number }): Promise<Ping>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User> = new Map();
-  private usersByUsername: Map<string, User> = new Map();
-  private pings: Map<number, Ping> = new Map();
-  private nextUserId = 1;
-  private nextPingId = 1;
-
+export class DatabaseStorage implements IStorage {
   // User operations for JWT auth
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return this.usersByUsername.get(username);
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(userData: CreateUser): Promise<User> {
-    const userId = (this.nextUserId++).toString();
-    const user: User = {
-      id: userId,
-      username: userData.username,
-      email: userData.email ?? null,
-      password: userData.password,
-      firstName: userData.firstName ?? null,
-      lastName: userData.lastName ?? null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.users.set(userId, user);
-    this.usersByUsername.set(userData.username, user);
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .returning();
     return user;
   }
 
   // Ping operations
-  async createPing(pingData: InsertPing & { userId: string }): Promise<Ping> {
-    const ping: Ping = {
-      id: this.nextPingId++,
-      userId: pingData.userId,
-      latitude: pingData.latitude,
-      longitude: pingData.longitude,
-      message: pingData.message ?? null,
-      parentPingId: null,
-      createdAt: new Date(),
-    };
-    this.pings.set(ping.id, ping);
+  async createPing(pingData: InsertPing & { userId: number }): Promise<Ping> {
+    const [ping] = await db
+      .insert(pings)
+      .values({
+        userId: pingData.userId,
+        latitude: pingData.latitude,
+        longitude: pingData.longitude,
+        message: pingData.message,
+        parentPingId: null,
+      })
+      .returning();
     return ping;
   }
 
-  async getUserPings(userId: string): Promise<Ping[]> {
-    const userPings = Array.from(this.pings.values())
-      .filter(ping => ping.userId === userId)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    return userPings;
+  async getUserPings(userId: number): Promise<Ping[]> {
+    return await db
+      .select()
+      .from(pings)
+      .where(eq(pings.userId, userId))
+      .orderBy(pings.createdAt);
   }
 
-  async getLatestUserPings(userId: string, limit: number): Promise<Ping[]> {
-    const userPings = await this.getUserPings(userId);
-    return userPings.slice(0, limit);
+  async getLatestUserPings(userId: number, limit: number): Promise<Ping[]> {
+    return await db
+      .select()
+      .from(pings)
+      .where(eq(pings.userId, userId))
+      .orderBy(pings.createdAt)
+      .limit(limit);
   }
 
   async getPingById(id: number): Promise<Ping | undefined> {
-    return this.pings.get(id);
+    const [ping] = await db.select().from(pings).where(eq(pings.id, id));
+    return ping || undefined;
   }
 
-  async respondToPing(parentId: number, pingData: InsertPing & { userId: string }): Promise<Ping> {
-    const ping: Ping = {
-      id: this.nextPingId++,
-      userId: pingData.userId,
-      latitude: pingData.latitude,
-      longitude: pingData.longitude,
-      message: pingData.message ?? null,
-      parentPingId: parentId,
-      createdAt: new Date(),
-    };
-    this.pings.set(ping.id, ping);
+  async respondToPing(parentId: number, pingData: InsertPing & { userId: number }): Promise<Ping> {
+    const [ping] = await db
+      .insert(pings)
+      .values({
+        userId: pingData.userId,
+        latitude: pingData.latitude,
+        longitude: pingData.longitude,
+        message: pingData.message,
+        parentPingId: parentId,
+      })
+      .returning();
     return ping;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
