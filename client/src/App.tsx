@@ -34,21 +34,13 @@ function Router() {
 
   return (
     <Switch>
-      {!isAuthenticated ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/auth" component={AuthPage} />
-          <Route path="*" component={Landing} />
-        </>
-      ) : (
-        <>
-          <Route path="/" component={Dashboard} />
-          <Route path="/send-ping" component={SendPing} />
-          <Route path="/all-pings" component={AllPings} />
-          <Route path="/trails" component={TrailView} />
-          <Route path="/security" component={SecurityDashboard} />
-        </>
-      )}
+      <Route path="/" component={Landing} />
+      <Route path="/auth" component={AuthPage} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/send-ping" component={SendPing} />
+      <Route path="/all-pings" component={AllPings} />
+      <Route path="/trails" component={TrailView} />
+      <Route path="/security" component={SecurityDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
