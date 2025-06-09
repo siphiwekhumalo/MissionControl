@@ -41,24 +41,29 @@ export async function authenticate(req: AuthRequest, res: Response, next: NextFu
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "No token provided" });
+      console.log(`[SECURITY ALERT] Unauthorized access attempt from ${req.ip} - Missing credentials`);
+      return res.status(401).json({ message: "Access denied: Invalid credentials" });
     }
 
     const token = authHeader.substring(7);
     const decoded = verifyToken(token);
     
     if (!decoded) {
-      return res.status(401).json({ message: "Invalid token" });
+      console.log(`[SECURITY ALERT] Invalid token from ${req.ip} - JWT verification failed`);
+      return res.status(401).json({ message: "Access denied: Invalid credentials" });
     }
 
     const user = await storage.getUser(decoded.userId);
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      console.log(`[SECURITY ALERT] Token for non-existent agent ${decoded.userId} from ${req.ip}`);
+      return res.status(401).json({ message: "Access denied: Agent credentials revoked" });
     }
 
     req.userId = decoded.userId;
+    console.log(`[SECURITY] Agent ${decoded.userId} authenticated from ${req.ip} at ${new Date().toISOString()}`);
     next();
   } catch (error) {
-    res.status(401).json({ message: "Authentication failed" });
+    console.log(`[SECURITY ERROR] Authentication failure from ${req.ip}:`, error);
+    res.status(401).json({ message: "Access denied: Authentication failed" });
   }
 }
