@@ -1,2 +1,2 @@
 $env:NODE_ENV = "development"
-node server-local.js
+node server-standalone.js
