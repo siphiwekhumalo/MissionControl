@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
 interface User {
-  id: string;
+  id: number;
   username: string;
   email: string | null;
   firstName: string | null;
