@@ -310,13 +310,13 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-mission-silver">Password</FormLabel>
+                          <FormLabel className="text-mission-silver font-medium">Password</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               type="password"
                               placeholder="Choose a secure password"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
+                              className="bg-mission-dark/60 border-mission-gold/30 text-white placeholder:text-mission-silver/50 focus:border-mission-gold focus:ring-2 focus:ring-mission-gold/20 transition-all duration-200 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
