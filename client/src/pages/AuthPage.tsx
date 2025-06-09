@@ -302,7 +302,7 @@ export default function AuthPage() {
                               {...field}
                               type="password"
                               placeholder="Choose a secure password"
-                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50"
+                              className="bg-mission-surface/50 border-mission-surface text-white placeholder:text-mission-silver/50 pointer-events-auto relative z-50"
                             />
                           </FormControl>
                           <FormMessage />
