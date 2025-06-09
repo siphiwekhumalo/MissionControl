@@ -22,9 +22,9 @@ if (majorVersion >= 20) {
   serverCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
   serverArgs = ['cross-env', 'NODE_ENV=development', 'tsx', 'server/index.ts'];
 } else if (majorVersion >= 18) {
-  console.log(`⚠️  Using compatibility server (Node.js ${majorVersion})`);
+  console.log(`⚠️  Using local development server (Node.js ${majorVersion})`);
   serverCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-  serverArgs = ['cross-env', 'NODE_ENV=development', 'tsx', 'server-compatible.ts'];
+  serverArgs = ['cross-env', 'NODE_ENV=development', 'tsx', 'server-local-dev.ts'];
 } else {
   console.log(`❌ Node.js ${majorVersion} not supported. Please upgrade to Node.js 18 or higher.`);
   process.exit(1);
