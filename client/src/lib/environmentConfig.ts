@@ -55,6 +55,18 @@ export async function universalFetch(endpoint: string, options: RequestInit = {}
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const fullUrl = `${ENV.apiBaseUrl}${normalizedEndpoint}`;
   
+  // Debug environment detection
+  if (typeof window !== 'undefined') {
+    console.log('=== ENVIRONMENT DEBUG ===');
+    console.log('hostname:', window.location.hostname);
+    console.log('origin:', window.location.origin);
+    console.log('ENV.isLocal:', ENV.isLocal);
+    console.log('ENV.isReplit:', ENV.isReplit);
+    console.log('ENV.apiBaseUrl:', ENV.apiBaseUrl);
+    console.log('fullUrl:', fullUrl);
+    console.log('=== END DEBUG ===');
+  }
+  
   console.log(`API: ${options.method || 'GET'} ${fullUrl} [ENV: ${ENV.isLocal ? 'local' : ENV.isReplit ? 'replit' : 'unknown'}]`);
   
   return fetch(fullUrl, {
