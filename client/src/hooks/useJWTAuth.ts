@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { apiCall } from "@/lib/apiConfig";
+import { universalFetch } from "@/lib/environmentConfig";
 
 interface User {
   id: number;
