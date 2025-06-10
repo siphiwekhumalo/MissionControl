@@ -51,16 +51,19 @@ export async function universalFetch(endpoint: string, options: RequestInit = {}
   const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
   const fullUrl = `${currentOrigin}${normalizedEndpoint}`;
   
-  console.log(`API: ${options.method || 'GET'} ${fullUrl}`);
+  console.log(`API: ${options.method || 'GET'} ${fullUrl} [Cache-Busted-v3]`);
   
   // Use absolute URL with current domain
   return fetch(fullUrl, {
     ...options,
     credentials: 'same-origin',
+    cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
-      'Cache-Control': 'no-cache',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
       ...options.headers,
     },
   });

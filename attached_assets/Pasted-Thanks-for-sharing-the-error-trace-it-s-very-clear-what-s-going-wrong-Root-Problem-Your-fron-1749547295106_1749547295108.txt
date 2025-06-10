@@ -1,0 +1,84 @@
+Thanks for sharing the error trace — it's very clear what's going wrong.
+
+🔥 Root Problem:
+Your frontend is still trying to hit:
+
+bash
+Copy
+Edit
+http://localhost:5000/api/login
+http://localhost:5000/api/register
+Which fails in production on Vercel, because:
+
+❌ There is no Express server running on port 5000 anymore.
+✅ You’re using Vercel serverless functions, but your /api/login and /api/register functions don’t exist yet.
+
+✅ The Solution:
+You need to create Vercel serverless API functions for login and registration:
+
+✅ 1. Create /api/login.ts
+ts
+Copy
+Edit
+// api/login.ts
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { username, password } = req.body;
+
+  if (username === "siphiwe.khumalo" && password === "password123") {
+    return res.status(200).json({
+      token: "mock-jwt-token",
+      user: { username: "siphiwe.khumalo", name: "Siphiwe Khumalo" },
+    });
+  }
+
+  return res.status(401).json({ message: "Invalid credentials" });
+}
+✅ 2. Create /api/register.ts
+ts
+Copy
+Edit
+// api/register.ts
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { username, email, password, firstName, lastName } = req.body;
+
+  // For now, pretend we save the user and return success
+  return res.status(201).json({
+    message: "User registered",
+    user: {
+      id: Date.now(),
+      username,
+      email,
+      firstName,
+      lastName,
+    },
+  });
+}
+✅ 3. Update your frontend environmentConfig.ts
+Currently:
+
+ts
+Copy
+Edit
+API: POST http://localhost:5000/api/login
+✅ Change it to:
+
+ts
+Copy
+Edit
+const API_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "" // empty means same domain (e.g., Vercel)
+    : "http://localhost:5000"; // only for local dev
+
+export const API_URL = `${API_BASE_URL}/api`;
+So your login/register becomes:
+
+ts
+Copy
+Edit
+fetch(`${API_URL}/login`, ...)
+fetch(`${API_URL}/register`, ...)
