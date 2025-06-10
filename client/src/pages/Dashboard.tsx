@@ -47,8 +47,7 @@ export default function Dashboard() {
     enabled: isAuthenticated,
   });
 
-  // Debug log to see ping data structure
-  console.log('All pings data:', allPings);
+
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);

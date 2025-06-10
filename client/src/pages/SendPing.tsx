@@ -36,6 +36,12 @@ export default function SendPing() {
   const [isGeneratingCoords, setIsGeneratingCoords] = useState(false);
   const [coordinateSource, setCoordinateSource] = useState<"manual" | "gps" | "random">("random");
 
+  // Get latest pings for response functionality
+  const { data: latestPings } = useQuery({
+    queryKey: ["/api/pings/latest"],
+    enabled: isAuthenticated,
+  });
+
   // Check for response type parameter in URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -105,12 +111,15 @@ export default function SendPing() {
   }, [latitude, longitude]);
 
   const sendPingMutation = useMutation({
-    mutationFn: async (data: { latitude: string; longitude: string; message?: string; parentPingId?: number }) => {
-      if (pingType === "response" && parentPingId) {
-        return await apiRequest("POST", `/api/pings/${parentPingId}`, {
+    mutationFn: async (data: { latitude: string; longitude: string; message?: string }) => {
+      if (pingType === "response" && latestPings && latestPings.length > 0) {
+        // Use the latest ping as the parent for response
+        const latestPingId = latestPings[0].id;
+        return await apiRequest("POST", "/api/pings", {
           latitude: data.latitude,
           longitude: data.longitude,
           message: data.message || null,
+          parentPingId: latestPingId,
         });
       } else {
         return await apiRequest("POST", "/api/pings", {
