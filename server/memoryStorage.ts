@@ -132,7 +132,7 @@ export class MemoryStorage implements IStorage {
     const ping: Ping = {
       id: this.nextId++,
       ...pingData,
-      parentId,
+      parentPingId: parentId,
       createdAt: new Date()
     };
     this.pings.push(ping);

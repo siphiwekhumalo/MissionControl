@@ -134,13 +134,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const ping = await storage.createPing({
-        latitude: validation.data.latitude,
-        longitude: validation.data.longitude,
-        message: validation.data.message,
-        parentPingId: validation.data.parentPingId,
-        userId: req.userId!,
-      });
+      let ping: any;
+      
+      if (validation.data.parentPingId) {
+        // This is a response to an existing ping
+        ping = await storage.respondToPing(validation.data.parentPingId, {
+          latitude: validation.data.latitude,
+          longitude: validation.data.longitude,
+          message: validation.data.message,
+          userId: req.userId!,
+        });
+      } else {
+        // This is a new initial ping
+        ping = await storage.createPing({
+          latitude: validation.data.latitude,
+          longitude: validation.data.longitude,
+          message: validation.data.message,
+          parentPingId: validation.data.parentPingId,
+          userId: req.userId!,
+        });
+      }
 
       // Security audit log for new transmissions
       console.log(`[SECURITY] Agent ${req.userId} created transmission #${ping.id} at coordinates [${ping.latitude}, ${ping.longitude}] - ${new Date().toISOString()}`);
