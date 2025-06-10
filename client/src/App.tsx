@@ -11,7 +11,7 @@ import Dashboard from "@/pages/Dashboard";
 import SendPing from "@/pages/SendPing";
 import AllPings from "@/pages/AllPings";
 import TrailView from "@/pages/TrailView";
-import SecurityDashboard from "@/pages/SecurityDashboard";
+
 import { Skeleton } from "@/components/ui/skeleton";
 
 function Router() {
