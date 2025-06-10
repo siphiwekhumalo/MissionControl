@@ -1,193 +1,218 @@
+import {
+  pgTable,
+  text,
+  varchar,
+  timestamp,
+  jsonb,
+  index,
+  integer,
+  boolean,
+  serial,
+} from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// User types for in-memory storage with file persistence
-export interface User {
-  id: number;
-  username: string;
-  email: string | null;
-  password: string;
-  firstName: string | null;
-  lastName: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+// Session storage table for authentication
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
 
-export interface CreateUser {
-  username: string;
-  email?: string | null;
-  password: string;
-  firstName?: string | null;
-  lastName?: string | null;
-}
-
-// Mission types for intelligence operations
-export interface Mission {
-  id: number;
-  userId: number;
-  codename: string;
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  status: 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'COMPROMISED';
-  classification: 'UNCLASSIFIED' | 'CONFIDENTIAL' | 'SECRET' | 'TOP_SECRET';
-  description: string;
-  targetLocation?: string;
-  estimatedDuration?: number; // in hours
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// Agent Profile with clearance levels
-export interface AgentProfile {
-  id: number;
-  userId: number;
-  agentCode: string;
-  clearanceLevel: number; // 1-10, higher = more access
-  specializations: string[];
-  activeStatus: 'ACTIVE' | 'INACTIVE' | 'DEEP_COVER' | 'COMPROMISED';
-  lastSeen: Date;
-  missionCount: number;
-  successRate: number;
-}
-
-// Intelligence Report
-export interface IntelReport {
-  id: number;
-  userId: number;
-  missionId?: number;
-  reportType: 'SURVEILLANCE' | 'RECONNAISSANCE' | 'COUNTER_INTEL' | 'EXTRACTION';
-  threat_level: 'GREEN' | 'YELLOW' | 'ORANGE' | 'RED';
-  location: string;
-  summary: string;
-  details: string;
-  attachments?: string[];
-  verified: boolean;
-  createdAt: Date;
-}
-
-// Secure Communication
-export interface SecureMessage {
-  id: number;
-  senderId: number;
-  recipientId: number;
-  encryptionLevel: 'BASIC' | 'ADVANCED' | 'QUANTUM';
-  subject: string;
-  content: string;
-  isRead: boolean;
-  expiresAt?: Date;
-  createdAt: Date;
-}
-
-// Equipment Request
-export interface Equipment {
-  id: number;
-  name: string;
-  category: 'SURVEILLANCE' | 'COMMUNICATION' | 'WEAPON' | 'VEHICLE' | 'TECH';
-  classification: 'STANDARD' | 'RESTRICTED' | 'CLASSIFIED';
-  availability: 'AVAILABLE' | 'IN_USE' | 'MAINTENANCE';
-  description: string;
-}
-
-export interface EquipmentRequest {
-  id: number;
-  userId: number;
-  equipmentId: number;
-  requestType: 'CHECKOUT' | 'RETURN' | 'MAINTENANCE';
-  justification: string;
-  approvalStatus: 'PENDING' | 'APPROVED' | 'DENIED';
-  requestedAt: Date;
-  approvedAt?: Date;
-  approvedBy?: number;
-}
-
-// Ping types for in-memory storage
-export interface Ping {
-  id: number;
-  userId: number;
-  latitude: string;
-  longitude: string;
-  message: string | null;
-  parentPingId: number | null;
-  createdAt: Date;
-}
-
-// Ping creation schema and types
-export const insertPingSchema = z.object({
-  latitude: z.string().min(1, "Latitude is required"),
-  longitude: z.string().min(1, "Longitude is required"),
-  message: z.string().nullable().optional().transform(val => val || null),
-  parentPingId: z.number().nullable().optional(),
+// User storage table
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: varchar("username").unique().notNull(),
+  email: varchar("email"),
+  password: varchar("password").notNull(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export type InsertPing = z.infer<typeof insertPingSchema>;
+// Mission management
+export const missions = pgTable("missions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  codename: varchar("codename").notNull(),
+  priority: varchar("priority", { enum: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] }).notNull(),
+  status: varchar("status", { enum: ['PENDING', 'ACTIVE', 'COMPLETED', 'COMPROMISED'] }).notNull().default('PENDING'),
+  classification: varchar("classification", { enum: ['UNCLASSIFIED', 'CONFIDENTIAL', 'SECRET', 'TOP_SECRET'] }).notNull(),
+  description: text("description").notNull(),
+  targetLocation: varchar("target_location"),
+  estimatedDuration: integer("estimated_duration"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
 
-// Authentication schemas
+// Agent profiles
+export const agentProfiles = pgTable("agent_profiles", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  agentCode: varchar("agent_code").notNull().unique(),
+  clearanceLevel: integer("clearance_level").notNull(),
+  specializations: text("specializations").array(),
+  activeStatus: varchar("active_status", { enum: ['ACTIVE', 'INACTIVE', 'DEEP_COVER', 'COMPROMISED'] }).notNull().default('ACTIVE'),
+  lastSeen: timestamp("last_seen").defaultNow(),
+  missionCount: integer("mission_count").notNull().default(0),
+  successRate: integer("success_rate").notNull().default(0),
+});
+
+// Intelligence reports
+export const intelReports = pgTable("intel_reports", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  missionId: integer("mission_id").references(() => missions.id),
+  reportType: varchar("report_type", { enum: ['SURVEILLANCE', 'RECONNAISSANCE', 'COUNTER_INTEL', 'EXTRACTION'] }).notNull(),
+  threatLevel: varchar("threat_level", { enum: ['GREEN', 'YELLOW', 'ORANGE', 'RED'] }).notNull(),
+  location: varchar("location").notNull(),
+  summary: text("summary").notNull(),
+  details: text("details").notNull(),
+  attachments: text("attachments").array(),
+  verified: boolean("verified").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Secure messages
+export const secureMessages = pgTable("secure_messages", {
+  id: serial("id").primaryKey(),
+  senderId: integer("sender_id").notNull().references(() => users.id),
+  recipientId: integer("recipient_id").notNull().references(() => users.id),
+  encryptionLevel: varchar("encryption_level", { enum: ['BASIC', 'ADVANCED', 'QUANTUM'] }).notNull().default('BASIC'),
+  subject: varchar("subject").notNull(),
+  content: text("content").notNull(),
+  isRead: boolean("is_read").notNull().default(false),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Equipment
+export const equipment = pgTable("equipment", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  category: varchar("category", { enum: ['SURVEILLANCE', 'COMMUNICATION', 'WEAPON', 'VEHICLE', 'TECH'] }).notNull(),
+  classification: varchar("classification", { enum: ['STANDARD', 'RESTRICTED', 'CLASSIFIED'] }).notNull(),
+  availability: varchar("availability", { enum: ['AVAILABLE', 'IN_USE', 'MAINTENANCE'] }).notNull().default('AVAILABLE'),
+  description: text("description").notNull(),
+});
+
+// Equipment requests
+export const equipmentRequests = pgTable("equipment_requests", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  equipmentId: integer("equipment_id").notNull().references(() => equipment.id),
+  requestType: varchar("request_type", { enum: ['CHECKOUT', 'RETURN', 'MAINTENANCE'] }).notNull(),
+  justification: text("justification").notNull(),
+  approvalStatus: varchar("approval_status", { enum: ['PENDING', 'APPROVED', 'DENIED'] }).notNull().default('PENDING'),
+  requestedAt: timestamp("requested_at").defaultNow(),
+  approvedAt: timestamp("approved_at"),
+  approvedBy: integer("approved_by").references(() => users.id),
+});
+
+// Pings/Transmissions
+export const pings = pgTable("pings", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  latitude: varchar("latitude").notNull(),
+  longitude: varchar("longitude").notNull(),
+  message: text("message"),
+  parentPingId: integer("parent_ping_id").references(() => pings.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Type exports
+export type User = typeof users.$inferSelect;
+export type UpsertUser = typeof users.$inferInsert;
+export type CreateUser = Omit<typeof users.$inferInsert, 'id' | 'createdAt' | 'updatedAt'>;
+
+export type Mission = typeof missions.$inferSelect;
+export type CreateMission = Omit<typeof missions.$inferInsert, 'id' | 'userId' | 'status' | 'createdAt' | 'updatedAt'>;
+export type UpdateMission = Partial<CreateMission>;
+
+export type AgentProfile = typeof agentProfiles.$inferSelect;
+export type CreateAgentProfile = Omit<typeof agentProfiles.$inferInsert, 'id' | 'userId' | 'lastSeen' | 'missionCount' | 'successRate'>;
+
+export type IntelReport = typeof intelReports.$inferSelect;
+export type CreateIntelReport = Omit<typeof intelReports.$inferInsert, 'id' | 'userId' | 'verified' | 'createdAt'>;
+
+export type SecureMessage = typeof secureMessages.$inferSelect;
+export type CreateSecureMessage = Omit<typeof secureMessages.$inferInsert, 'id' | 'senderId' | 'isRead' | 'createdAt'>;
+
+export type Equipment = typeof equipment.$inferSelect;
+
+export type EquipmentRequest = typeof equipmentRequests.$inferSelect;
+export type CreateEquipmentRequest = Omit<typeof equipmentRequests.$inferInsert, 'id' | 'userId' | 'approvalStatus' | 'requestedAt' | 'approvedAt' | 'approvedBy'>;
+
+export type Ping = typeof pings.$inferSelect;
+export type InsertPing = Omit<typeof pings.$inferInsert, 'id' | 'userId' | 'createdAt'>;
+
+// Validation schemas
+export const insertPingSchema = createInsertSchema(pings).omit({
+  id: true,
+  userId: true,
+  createdAt: true,
+});
+
 export const registerSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  email: z.string().email("Invalid email address").optional(),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  username: z.string().min(3).max(50),
+  email: z.string().email().optional(),
+  password: z.string().min(6),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
 });
 
 export const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
+  username: z.string(),
+  password: z.string(),
+});
+
+export const createMissionSchema = createInsertSchema(missions).omit({
+  id: true,
+  userId: true,
+  status: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateMissionSchema = createMissionSchema.extend({
+  status: z.enum(['PENDING', 'ACTIVE', 'COMPLETED', 'COMPROMISED']).optional(),
+}).partial();
+
+export const createAgentProfileSchema = createInsertSchema(agentProfiles).omit({
+  id: true,
+  userId: true,
+  lastSeen: true,
+  missionCount: true,
+  successRate: true,
+});
+
+export const createIntelReportSchema = createInsertSchema(intelReports).omit({
+  id: true,
+  userId: true,
+  verified: true,
+  createdAt: true,
+});
+
+export const createSecureMessageSchema = createInsertSchema(secureMessages).omit({
+  id: true,
+  senderId: true,
+  isRead: true,
+  createdAt: true,
+});
+
+export const createEquipmentRequestSchema = createInsertSchema(equipmentRequests).omit({
+  id: true,
+  userId: true,
+  approvalStatus: true,
+  requestedAt: true,
+  approvedAt: true,
+  approvedBy: true,
 });
 
 export type RegisterData = z.infer<typeof registerSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
-
-// Mission validation schemas
-export const createMissionSchema = z.object({
-  codename: z.string().min(3, "Mission codename must be at least 3 characters"),
-  priority: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']),
-  classification: z.enum(['UNCLASSIFIED', 'CONFIDENTIAL', 'SECRET', 'TOP_SECRET']),
-  description: z.string().min(10, "Mission description must be at least 10 characters"),
-  targetLocation: z.string().optional(),
-  estimatedDuration: z.number().min(1).max(8760).optional(), // 1 hour to 1 year
-});
-
-export const updateMissionSchema = createMissionSchema.extend({
-  status: z.enum(['PENDING', 'ACTIVE', 'COMPLETED', 'COMPROMISED']),
-}).partial();
-
-// Agent Profile schemas
-export const createAgentProfileSchema = z.object({
-  agentCode: z.string().min(4, "Agent code must be at least 4 characters"),
-  clearanceLevel: z.number().min(1).max(10),
-  specializations: z.array(z.string()).min(1, "At least one specialization required"),
-  activeStatus: z.enum(['ACTIVE', 'INACTIVE', 'DEEP_COVER', 'COMPROMISED']).default('ACTIVE'),
-});
-
-// Intelligence Report schemas
-export const createIntelReportSchema = z.object({
-  missionId: z.number().optional(),
-  reportType: z.enum(['SURVEILLANCE', 'RECONNAISSANCE', 'COUNTER_INTEL', 'EXTRACTION']),
-  threat_level: z.enum(['GREEN', 'YELLOW', 'ORANGE', 'RED']),
-  location: z.string().min(1, "Location is required"),
-  summary: z.string().min(5, "Summary must be at least 5 characters"),
-  details: z.string().min(10, "Details must be at least 10 characters"),
-  attachments: z.array(z.string()).optional(),
-});
-
-// Secure Message schemas
-export const createSecureMessageSchema = z.object({
-  recipientId: z.number(),
-  encryptionLevel: z.enum(['BASIC', 'ADVANCED', 'QUANTUM']).default('BASIC'),
-  subject: z.string().min(1, "Subject is required"),
-  content: z.string().min(1, "Message content is required"),
-  expiresAt: z.date().optional(),
-});
-
-// Equipment Request schemas
-export const createEquipmentRequestSchema = z.object({
-  equipmentId: z.number(),
-  requestType: z.enum(['CHECKOUT', 'RETURN', 'MAINTENANCE']),
-  justification: z.string().min(10, "Justification must be at least 10 characters"),
-});
-
-export type CreateMission = z.infer<typeof createMissionSchema>;
-export type UpdateMission = z.infer<typeof updateMissionSchema>;
-export type CreateAgentProfile = z.infer<typeof createAgentProfileSchema>;
-export type CreateIntelReport = z.infer<typeof createIntelReportSchema>;
-export type CreateSecureMessage = z.infer<typeof createSecureMessageSchema>;
-export type CreateEquipmentRequest = z.infer<typeof createEquipmentRequestSchema>;
