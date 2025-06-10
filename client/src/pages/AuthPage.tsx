@@ -46,18 +46,24 @@ export default function AuthPage() {
 
   const onLogin = async (data: LoginData) => {
     try {
+      console.log("Attempting login with data:", data);
       await loginMutation.mutateAsync(data);
+      console.log("Login mutation successful, redirecting to dashboard");
       setLocation("/dashboard");
     } catch (error) {
+      console.error("Login error in component:", error);
       // Error handling is already done in the mutation
     }
   };
 
   const onRegister = async (data: RegisterData) => {
     try {
+      console.log("Attempting registration with data:", data);
       await registerMutation.mutateAsync(data);
+      console.log("Registration mutation successful, redirecting to dashboard");
       setLocation("/dashboard");
     } catch (error) {
+      console.error("Registration error in component:", error);
       // Error handling is already done in the mutation
     }
   };
