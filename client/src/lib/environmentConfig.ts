@@ -48,30 +48,38 @@ function detectEnvironment(): EnvironmentConfig {
   };
 }
 
+// Force fresh detection on each import to avoid caching issues
 export const ENV = detectEnvironment();
+
+// Helper function to get current environment (for debugging)
+export function getCurrentEnv() {
+  return detectEnvironment();
+}
 
 // Universal API call function that works in all environments
 export async function universalFetch(endpoint: string, options: RequestInit = {}): Promise<Response> {
+  // Get fresh environment detection for each API call to avoid caching issues
+  const currentEnv = getCurrentEnv();
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  const fullUrl = `${ENV.apiBaseUrl}${normalizedEndpoint}`;
+  const fullUrl = `${currentEnv.apiBaseUrl}${normalizedEndpoint}`;
   
   // Debug environment detection (remove in production)
-  if (typeof window !== 'undefined' && ENV.isDevelopment) {
+  if (typeof window !== 'undefined' && currentEnv.isDevelopment) {
     console.log('=== ENVIRONMENT DEBUG ===');
     console.log('hostname:', window.location.hostname);
     console.log('origin:', window.location.origin);
-    console.log('ENV.isLocal:', ENV.isLocal);
-    console.log('ENV.isReplit:', ENV.isReplit);
-    console.log('ENV.apiBaseUrl:', ENV.apiBaseUrl);
+    console.log('ENV.isLocal:', currentEnv.isLocal);
+    console.log('ENV.isReplit:', currentEnv.isReplit);
+    console.log('ENV.apiBaseUrl:', currentEnv.apiBaseUrl);
     console.log('fullUrl:', fullUrl);
     console.log('=== END DEBUG ===');
   }
   
-  console.log(`API: ${options.method || 'GET'} ${fullUrl} [ENV: ${ENV.isLocal ? 'local' : ENV.isReplit ? 'replit' : 'unknown'}]`);
+  console.log(`API: ${options.method || 'GET'} ${fullUrl} [ENV: ${currentEnv.isLocal ? 'local' : currentEnv.isReplit ? 'replit' : 'unknown'}]`);
   
   return fetch(fullUrl, {
     ...options,
-    credentials: ENV.isLocal ? 'include' : 'same-origin',
+    credentials: currentEnv.isLocal ? 'include' : 'same-origin',
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
