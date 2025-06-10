@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { apiCall } from "@/lib/apiConfig";
 
 interface User {
   id: number;
@@ -42,7 +43,7 @@ export function useJWTAuth() {
       const token = localStorage.getItem("token");
       if (!token) return null;
 
-      const response = await fetch("/api/user", {
+      const response = await apiCall("/api/user", {
         headers: {
           ...getAuthHeaders(),
         },
@@ -68,11 +69,8 @@ export function useJWTAuth() {
     mutationFn: async (credentials: LoginData): Promise<AuthResponse> => {
       console.log("Starting login with:", credentials);
       
-      const response = await fetch("/api/login", {
+      const response = await apiCall("/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(credentials),
       });
 
@@ -116,11 +114,8 @@ export function useJWTAuth() {
     mutationFn: async (credentials: RegisterData): Promise<AuthResponse> => {
       console.log("Starting registration with:", credentials);
       
-      const response = await fetch("/api/register", {
+      const response = await apiCall("/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(credentials),
       });
 
