@@ -25,8 +25,9 @@ import {
   type EquipmentRequest,
   type CreateEquipmentRequest,
 } from "@shared/schema";
-import { db } from "./db";
-import { eq, desc, and, gte, or } from "drizzle-orm";
+// Database imports removed for local development simplicity
+// import { db } from "./db";
+// import { eq, desc, and, gte, or } from "drizzle-orm";
 
 export interface IStorage {
   // User operations for JWT auth

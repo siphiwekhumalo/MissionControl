@@ -1,6 +1,9 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./server/routes";
 
+// Override storage for local development
+import { storage } from "./server/simpleStorage";
+
 // Set up environment for local development with in-memory storage
 process.env.NODE_ENV = 'development';
 process.env.SESSION_SECRET = 'demo-secret-for-local-development';
