@@ -34,13 +34,20 @@ export default function SendPing() {
   const [message, setMessage] = useState("");
   const [parentPingId, setParentPingId] = useState<string>("");
 
-  // Check for parent parameter in URL
+
+
+  // Get latest pings for response functionality
+  const { data: latestPings } = useQuery<Ping[]>({
+    queryKey: ["/api/pings/latest"],
+    enabled: isAuthenticated,
+  });
+
+  // Check for response type parameter in URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const parentId = urlParams.get('parent');
-    if (parentId) {
+    const type = urlParams.get('type');
+    if (type === 'response') {
       setPingType("response");
-      setParentPingId(parentId);
     }
   }, []);
 
@@ -51,12 +58,14 @@ export default function SendPing() {
     }
   }, [isAuthenticated, authLoading, setLocation]);
 
-  const { data: allPings } = useQuery({
+  const { data: allPings } = useQuery<Ping[]>({
     queryKey: ["/api/pings"],
     enabled: isAuthenticated,
   });
 
-  const generateCoordinates = () => {
+
+
+  const generateRandomCoordinates = () => {
     const lat = (Math.random() * 180 - 90).toFixed(4);
     const lng = (Math.random() * 360 - 180).toFixed(4);
     setLatitude(lat);
@@ -66,17 +75,20 @@ export default function SendPing() {
   // Generate initial coordinates
   useEffect(() => {
     if (!latitude && !longitude) {
-      generateCoordinates();
+      generateRandomCoordinates();
     }
   }, [latitude, longitude]);
 
   const sendPingMutation = useMutation({
-    mutationFn: async (data: { latitude: string; longitude: string; message?: string; parentPingId?: number }) => {
-      if (pingType === "response" && parentPingId) {
-        return await apiRequest("POST", `/api/pings/${parentPingId}`, {
+    mutationFn: async (data: { latitude: string; longitude: string; message?: string }) => {
+      if (pingType === "response" && Array.isArray(latestPings) && latestPings.length > 0) {
+        // Use the latest ping as the parent for response
+        const latestPingId = latestPings[0].id;
+        return await apiRequest("POST", "/api/pings", {
           latitude: data.latitude,
           longitude: data.longitude,
           message: data.message || null,
+          parentPingId: latestPingId,
         });
       } else {
         return await apiRequest("POST", "/api/pings", {
@@ -128,10 +140,10 @@ export default function SendPing() {
       return;
     }
 
-    if (pingType === "response" && !parentPingId) {
+    if (pingType === "response" && (!allPings || allPings.length === 0)) {
       toast({
-        title: "Parent Ping Required",
-        description: "Please select a ping to respond to.",
+        title: "No Transmissions Available",
+        description: "No transmissions available for response.",
         variant: "destructive",
       });
       return;
@@ -146,8 +158,8 @@ export default function SendPing() {
       pingData.message = message;
     }
     
-    if (parentPingId) {
-      pingData.parentPingId = parseInt(parentPingId);
+    if (pingType === "response" && allPings && allPings.length > 0) {
+      pingData.parentPingId = allPings[0].id;
     }
     
     sendPingMutation.mutate(pingData);
@@ -244,66 +256,107 @@ export default function SendPing() {
                   </RadioGroup>
                 </div>
 
-                {/* Parent Ping Selection */}
+                {/* Latest Ping Response */}
                 {pingType === "response" && (
                   <div>
-                    <Label htmlFor="parentPing" className="block text-sm font-medium text-slate-300 mb-2">
-                      Select Previous Ping to Respond To
+                    <Label className="bond-subtitle text-base font-medium text-white mb-4 block">
+                      Response Target
                     </Label>
-                    <Select value={parentPingId} onValueChange={setParentPingId}>
-                      <SelectTrigger className="w-full bg-mission-dark border-slate-600 text-slate-50">
-                        <SelectValue placeholder="Select a ping..." />
-                      </SelectTrigger>
-                      <SelectContent className="bg-mission-dark border-slate-600">
-                        {Array.isArray(allPings) && allPings.map((ping: Ping) => (
-                          <SelectItem key={ping.id} value={ping.id.toString()}>
-                            Ping #{ping.id.toString().padStart(3, '0')} - {formatTimeAgo(ping.createdAt)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {Array.isArray(allPings) && allPings.length > 0 ? (
+                      <div className="glass gradient-border rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <p className="text-sm font-medium text-mission-silver mb-1">Responding to Latest Transmission</p>
+                            <p className="text-lg font-semibold text-white">
+                              Ping #{allPings[0].id.toString().padStart(3, '0')}
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2 h-2 bg-mission-green rounded-full pulse-glow"></div>
+                            <span className="text-xs text-mission-green">LATEST</span>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <p className="text-mission-silver mb-1">Coordinates</p>
+                            <p className="text-white font-mono">
+                              {allPings[0].latitude}, {allPings[0].longitude}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-mission-silver mb-1">Timestamp</p>
+                            <p className="text-white">{formatTimeAgo(allPings[0].createdAt)}</p>
+                          </div>
+                        </div>
+                        
+                        {allPings[0].message && (
+                          <div className="mt-4 pt-4 border-t border-mission-surface/50">
+                            <p className="text-mission-silver text-xs mb-1">Original Message</p>
+                            <p className="text-white text-sm italic">"{allPings[0].message}"</p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="glass gradient-border rounded-xl p-6 text-center">
+                        <div className="w-12 h-12 bg-mission-surface/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <svg className="w-6 h-6 text-mission-silver" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+                          </svg>
+                        </div>
+                        <p className="text-mission-silver">No transmissions available for response</p>
+                        <p className="text-sm text-mission-silver/60 mt-2">Create a new transmission instead</p>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {/* Coordinate Generation */}
                 <div>
-                  <Label className="block text-sm font-medium text-slate-300 mb-3">Mission Coordinates</Label>
-                  <div className="bg-mission-dark rounded-lg p-4 border border-slate-600">
-                    <div className="grid grid-cols-2 gap-4 mb-4">
+                  <Label className="bond-subtitle text-base font-medium text-white mb-4 block">Mission Coordinates</Label>
+                  
+                  <div className="glass gradient-border rounded-xl p-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                       <div>
-                        <Label className="block text-xs font-medium text-slate-400 mb-2">Latitude</Label>
+                        <Label className="text-sm font-medium text-mission-silver mb-2 block">Latitude</Label>
                         <input
                           type="text"
                           value={latitude}
                           onChange={(e) => setLatitude(e.target.value)}
-                          className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-slate-200 font-mono text-sm"
+                          className="w-full bg-mission-surface/50 border border-mission-surface rounded-lg px-4 py-3 text-white font-mono text-sm placeholder-mission-silver/50 focus:border-mission-green focus:ring-1 focus:ring-mission-green transition-colors"
+                          placeholder="0.0000"
                         />
                       </div>
                       <div>
-                        <Label className="block text-xs font-medium text-slate-400 mb-2">Longitude</Label>
+                        <Label className="text-sm font-medium text-mission-silver mb-2 block">Longitude</Label>
                         <input
                           type="text"
                           value={longitude}
                           onChange={(e) => setLongitude(e.target.value)}
-                          className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-slate-200 font-mono text-sm"
+                          className="w-full bg-mission-surface/50 border border-mission-surface rounded-lg px-4 py-3 text-white font-mono text-sm placeholder-mission-silver/50 focus:border-mission-green focus:ring-1 focus:ring-mission-green transition-colors"
+                          placeholder="0.0000"
                         />
                       </div>
                     </div>
+                    
                     <Button
                       type="button"
-                      variant="ghost"
-                      onClick={generateCoordinates}
-                      className="text-mission-green hover:text-emerald-400 text-sm font-medium p-0 h-auto"
+                      onClick={generateRandomCoordinates}
+                      className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-green/80 hover:to-mission-blue/80 text-white font-medium py-3 rounded-lg transition-all transform hover:scale-[1.02]"
                     >
-                      <i className="fas fa-dice mr-2"></i>
-                      Generate New Coordinates
+                      <div className="flex items-center justify-center space-x-2">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        <span>Generate Coordinates</span>
+                      </div>
                     </Button>
                   </div>
                 </div>
 
                 {/* Optional Message */}
                 <div>
-                  <Label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">
+                  <Label htmlFor="message" className="bond-subtitle text-base font-medium text-white mb-4 block">
                     Mission Notes (Optional)
                   </Label>
                   <Textarea
@@ -331,7 +384,7 @@ export default function SendPing() {
                     ) : (
                       <>
                         <i className="fas fa-paper-plane mr-2"></i>
-                        Transmit Ping
+                        {pingType === "response" ? "Send Response" : "Transmit Ping"}
                       </>
                     )}
                   </Button>
