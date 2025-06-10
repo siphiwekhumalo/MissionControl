@@ -6,6 +6,56 @@ A secure, spy-themed web application for mission tracking and communication, des
 ![Build Status](https://img.shields.io/badge/Build-Operational-green)
 ![Agent Status](https://img.shields.io/badge/Agents-Active-blue)
 
+## 🚀 Quick Start - Local Development
+
+### Prerequisites
+- Node.js (v18 or higher)
+- Git
+
+### 1. Clone and Setup
+```bash
+git clone <your-repo-url>
+cd MissionControl
+npm install
+```
+
+### 2. Start Backend Server
+
+**Windows Command Prompt:**
+```cmd
+start-local-dev.bat
+```
+
+**Windows PowerShell:**
+```powershell
+.\dev-local.ps1
+```
+
+**Manual (any platform):**
+```bash
+node server-local-simple.js
+```
+
+Backend runs on: `http://localhost:3001`
+
+### 3. Start Frontend (new terminal)
+```bash
+npx vite
+```
+
+Frontend runs on: `http://localhost:5173`
+
+### 4. Access Application
+Open `http://localhost:5173` in your browser
+
+## 🔐 Demo Agent Credentials
+
+| Username    | Password      | Clearance Level |
+|-------------|---------------|-----------------|
+| `siphiwe`   | `1924@Khumalo`| Senior Agent    |
+| `agent007`  | `secret123`   | Field Agent     |
+| `fieldagent`| `field123`    | Operations      |
+
 ## 🎯 Mission Overview
 
 MissionControl is a sophisticated web application that allows intelligence agents to:
@@ -13,6 +63,31 @@ MissionControl is a sophisticated web application that allows intelligence agent
 - Create interconnected mission trails through response networks
 - Monitor real-time security status and audit logs
 - Manage classified operations through a secure dashboard
+
+## ⚡ Testing Ping Operations
+
+1. **Authentication**: Log in with demo credentials
+2. **Navigation**: Access "Send Ping" from dashboard
+3. **Coordinate Generation**: Click "Generate Coordinates" for random GPS
+4. **Message Encryption**: Add optional classified message
+5. **Transmission**: Click "Transmit Ping"
+6. **Trail Management**: View and respond to pings in dashboard
+7. **Response Networks**: Create interconnected mission trails
+
+## 🛠️ Troubleshooting
+
+### Authentication Errors
+If seeing "Token for non-existent agent" errors:
+- Clear browser storage: F12 → Application → Clear Storage
+- Use incognito/private browsing mode
+- Log in fresh with demo credentials
+
+### Port Conflicts
+- Backend: port 3001 (modify in `server-local-simple.js`)
+- Frontend: port 5173 (Vite default)
+
+### CORS Configuration
+Local server pre-configured for ports 5000 and 5173
 
 ## 🛡️ Security Features
 
