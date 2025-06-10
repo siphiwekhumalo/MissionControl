@@ -52,9 +52,25 @@ curl -X POST http://localhost:3001/api/login \
   -d '{"username":"siphiwe","password":"1924@Khumalo"}'
 ```
 
-### Database
+### Database Setup
 
-The application uses PostgreSQL. Make sure you have the DATABASE_URL environment variable set.
+The application requires a PostgreSQL database. You have two options:
+
+#### Option 1: Use Replit (Recommended)
+The Replit environment already has a database configured and working. No additional setup required.
+
+#### Option 2: Local PostgreSQL Setup
+1. Install PostgreSQL locally
+2. Create a database: `createdb missioncontrol`
+3. Create a `.env.local` file in the project root:
+```env
+DATABASE_URL=postgresql://username:password@localhost:5432/missioncontrol
+SESSION_SECRET=your-secret-key-here
+NODE_ENV=development
+```
+4. Run database migrations: `npm run db:push`
+
+**Note**: Local database setup requires additional PostgreSQL installation and configuration. For quick testing, the Replit environment is easier to use.
 
 ### Authentication
 

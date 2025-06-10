@@ -1,6 +1,16 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./server/routes";
 
+// Set up environment for local development with in-memory storage
+process.env.NODE_ENV = 'development';
+process.env.SESSION_SECRET = 'demo-secret-for-local-development';
+
+console.log('Starting local development server with in-memory storage...');
+console.log('Demo users available:');
+console.log('  - Username: siphiwe, Password: 1924@Khumalo');
+console.log('  - Username: agent007, Password: secret123');
+console.log('  - Username: fieldagent, Password: field123');
+
 const app = express();
 
 // Manual CORS configuration for local development (without cors package)
