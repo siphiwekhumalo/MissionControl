@@ -474,7 +474,7 @@ export default function SendPing() {
                     ) : (
                       <>
                         <i className="fas fa-paper-plane mr-2"></i>
-                        Transmit Ping
+                        {pingType === "response" ? "Send Response" : "Transmit Ping"}
                       </>
                     )}
                   </Button>
