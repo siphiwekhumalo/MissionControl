@@ -33,8 +33,8 @@ function detectEnvironment(): EnvironmentConfig {
   // Set API base URL based on environment
   let apiBaseUrl = '';
   if (isLocal) {
-    // For local development, use localhost:5000
-    apiBaseUrl = 'http://localhost:5000';
+    // For local development, backend runs on port 3001, frontend on 5000
+    apiBaseUrl = 'http://localhost:3001';
   } else if (isReplit) {
     // For Replit, use relative URLs (same origin)
     apiBaseUrl = '';
@@ -55,8 +55,8 @@ export async function universalFetch(endpoint: string, options: RequestInit = {}
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const fullUrl = `${ENV.apiBaseUrl}${normalizedEndpoint}`;
   
-  // Debug environment detection
-  if (typeof window !== 'undefined') {
+  // Debug environment detection (remove in production)
+  if (typeof window !== 'undefined' && ENV.isDevelopment) {
     console.log('=== ENVIRONMENT DEBUG ===');
     console.log('hostname:', window.location.hostname);
     console.log('origin:', window.location.origin);
