@@ -19,8 +19,13 @@ function detectEnvironment(): EnvironmentConfig {
 
   const { hostname, protocol, port } = window.location;
   
-  const isReplit = hostname.includes('replit.dev') || hostname.includes('replit.app');
-  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+  // More robust Replit detection
+  const isReplit = hostname.includes('replit.dev') || 
+                   hostname.includes('replit.app') || 
+                   hostname.includes('replit.') ||
+                   hostname.includes('spock.replit.dev');
+  
+  const isLocal = !isReplit && (hostname === 'localhost' || hostname === '127.0.0.1');
   const isDevelopment = !isReplit && isLocal;
 
   // Always use relative URLs for API calls
@@ -42,13 +47,15 @@ export async function universalFetch(endpoint: string, options: RequestInit = {}
   // Ensure endpoint starts with /
   const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   
-  console.log(`API: ${options.method || 'GET'} ${normalizedEndpoint} (env: ${ENV.isReplit ? 'replit' : ENV.isLocal ? 'local' : 'unknown'})`);
+  // Force absolute URL using current domain to prevent localhost issues
+  const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+  const fullUrl = `${currentOrigin}${normalizedEndpoint}`;
   
-  // Use fetch with relative URL - this forces same-origin request
-  return fetch(normalizedEndpoint, {
+  console.log(`API: ${options.method || 'GET'} ${fullUrl}`);
+  
+  // Use absolute URL with current domain
+  return fetch(fullUrl, {
     ...options,
-    // Force same-origin to prevent cross-origin issues
-    mode: 'same-origin',
     credentials: 'same-origin',
     headers: {
       'Content-Type': 'application/json',
