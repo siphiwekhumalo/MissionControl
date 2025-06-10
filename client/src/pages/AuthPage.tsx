@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,10 +9,21 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import ThreeBackground from "@/components/ThreeBackground";
 import { registerSchema, loginSchema, type RegisterData, type LoginData } from "@shared/schema";
+import { useJWTAuth } from "@/hooks/useJWTAuth";
+import { useLocation } from "wouter";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const { toast } = useToast();
+  const { loginMutation, registerMutation, isAuthenticated } = useJWTAuth();
+  const [, setLocation] = useLocation();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLocation("/dashboard");
+    }
+  }, [isAuthenticated, setLocation]);
 
   const loginForm = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -35,73 +46,19 @@ export default function AuthPage() {
 
   const onLogin = async (data: LoginData) => {
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Login failed");
-      }
-
-      const result = await response.json();
-      
-      // Store token in localStorage
-      localStorage.setItem("token", result.token);
-      
-      toast({
-        title: "Login successful",
-        description: "Welcome back, agent!",
-      });
-
-      // Redirect to dashboard
-      window.location.href = "/";
+      await loginMutation.mutateAsync(data);
+      setLocation("/dashboard");
     } catch (error) {
-      toast({
-        title: "Login failed",
-        description: error instanceof Error ? error.message : "An error occurred",
-        variant: "destructive",
-      });
+      // Error handling is already done in the mutation
     }
   };
 
   const onRegister = async (data: RegisterData) => {
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Registration failed");
-      }
-
-      const result = await response.json();
-      
-      // Store token in localStorage
-      localStorage.setItem("token", result.token);
-      
-      toast({
-        title: "Registration successful",
-        description: "Welcome to MissionControl!",
-      });
-
-      // Redirect to dashboard
-      window.location.href = "/";
+      await registerMutation.mutateAsync(data);
+      setLocation("/dashboard");
     } catch (error) {
-      toast({
-        title: "Registration failed",
-        description: error instanceof Error ? error.message : "An error occurred",
-        variant: "destructive",
-      });
+      // Error handling is already done in the mutation
     }
   };
 
@@ -201,10 +158,10 @@ export default function AuthPage() {
                     
                     <Button 
                       type="submit"
-                      disabled={loginForm.formState.isSubmitting}
+                      disabled={loginMutation.isPending}
                       className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-blue hover:to-mission-green text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-mission-green/25 group cursor-pointer pointer-events-auto relative z-40"
                     >
-                      {loginForm.formState.isSubmitting ? "Logging in..." : "Login"}
+                      {loginMutation.isPending ? "Logging in..." : "Login"}
                     </Button>
                   </form>
                 </Form>
@@ -326,10 +283,10 @@ export default function AuthPage() {
                     
                     <Button 
                       type="submit"
-                      disabled={registerForm.formState.isSubmitting}
+                      disabled={registerMutation.isPending}
                       className="w-full bg-gradient-to-r from-mission-gold to-mission-green hover:from-mission-green hover:to-mission-gold text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-mission-gold/25 group cursor-pointer pointer-events-auto relative z-40"
                     >
-                      {registerForm.formState.isSubmitting ? "Creating Account..." : "Sign Up"}
+                      {registerMutation.isPending ? "Creating Account..." : "Sign Up"}
                     </Button>
                   </form>
                 </Form>
