@@ -53,7 +53,7 @@ export default function SendPing() {
     }
   }, [isAuthenticated, authLoading, setLocation]);
 
-  const { data: allPings } = useQuery({
+  const { data: allPings } = useQuery<Ping[]>({
     queryKey: ["/api/pings"],
     enabled: isAuthenticated,
   });
@@ -163,10 +163,10 @@ export default function SendPing() {
       return;
     }
 
-    if (pingType === "response" && !parentPingId) {
+    if (pingType === "response" && (!allPings || allPings.length === 0)) {
       toast({
-        title: "Parent Ping Required",
-        description: "Please select a ping to respond to.",
+        title: "No Transmissions Available",
+        description: "No transmissions available for response.",
         variant: "destructive",
       });
       return;
@@ -181,8 +181,8 @@ export default function SendPing() {
       pingData.message = message;
     }
     
-    if (parentPingId) {
-      pingData.parentPingId = parseInt(parentPingId);
+    if (pingType === "response" && Array.isArray(allPings) && (allPings as Ping[]).length > 0) {
+      pingData.parentPingId = (allPings as Ping[])[0].id;
     }
     
     sendPingMutation.mutate(pingData);
@@ -279,24 +279,58 @@ export default function SendPing() {
                   </RadioGroup>
                 </div>
 
-                {/* Parent Ping Selection */}
+                {/* Latest Ping Response */}
                 {pingType === "response" && (
                   <div>
-                    <Label htmlFor="parentPing" className="block text-sm font-medium text-slate-300 mb-2">
-                      Select Previous Ping to Respond To
+                    <Label className="bond-subtitle text-base font-medium text-white mb-4 block">
+                      Response Target
                     </Label>
-                    <Select value={parentPingId} onValueChange={setParentPingId}>
-                      <SelectTrigger className="w-full bg-mission-dark border-slate-600 text-slate-50">
-                        <SelectValue placeholder="Select a ping..." />
-                      </SelectTrigger>
-                      <SelectContent className="bg-mission-dark border-slate-600">
-                        {Array.isArray(allPings) && allPings.map((ping: Ping) => (
-                          <SelectItem key={ping.id} value={ping.id.toString()}>
-                            Ping #{ping.id.toString().padStart(3, '0')} - {formatTimeAgo(ping.createdAt)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {Array.isArray(allPings) && allPings.length > 0 ? (
+                      <div className="glass gradient-border rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <p className="text-sm font-medium text-mission-silver mb-1">Responding to Latest Transmission</p>
+                            <p className="text-lg font-semibold text-white">
+                              Ping #{allPings[0].id.toString().padStart(3, '0')}
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-2 h-2 bg-mission-green rounded-full pulse-glow"></div>
+                            <span className="text-xs text-mission-green">LATEST</span>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <p className="text-mission-silver mb-1">Coordinates</p>
+                            <p className="text-white font-mono">
+                              {allPings[0].latitude}, {allPings[0].longitude}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-mission-silver mb-1">Timestamp</p>
+                            <p className="text-white">{formatTimeAgo(allPings[0].createdAt)}</p>
+                          </div>
+                        </div>
+                        
+                        {allPings[0].message && (
+                          <div className="mt-4 pt-4 border-t border-mission-surface/50">
+                            <p className="text-mission-silver text-xs mb-1">Original Message</p>
+                            <p className="text-white text-sm italic">"{allPings[0].message}"</p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="glass gradient-border rounded-xl p-6 text-center">
+                        <div className="w-12 h-12 bg-mission-surface/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <svg className="w-6 h-6 text-mission-silver" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+                          </svg>
+                        </div>
+                        <p className="text-mission-silver">No transmissions available for response</p>
+                        <p className="text-sm text-mission-silver/60 mt-2">Create a new transmission instead</p>
+                      </div>
+                    )}
                   </div>
                 )}
 
