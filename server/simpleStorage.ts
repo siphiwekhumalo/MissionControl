@@ -73,7 +73,9 @@ export interface IStorage {
 export class SimpleMemoryStorage implements IStorage {
   private users = new Map<number, User>();
   private usersByUsername = new Map<string, User>();
+  private pings = new Map<number, Ping>();
   private nextUserId = 1;
+  private nextPingId = 1;
 
   constructor() {
     // Add demo users with properly hashed passwords
@@ -158,12 +160,58 @@ export class SimpleMemoryStorage implements IStorage {
     return this.createUser(userData as CreateUser);
   }
 
-  // Stub implementations for other methods (return empty arrays/false for demo)
-  async createPing(): Promise<Ping> { throw new Error("Not implemented for demo"); }
-  async getUserPings(): Promise<Ping[]> { return []; }
-  async getLatestUserPings(): Promise<Ping[]> { return []; }
-  async getPingById(): Promise<Ping | undefined> { return undefined; }
-  async respondToPing(): Promise<Ping> { throw new Error("Not implemented for demo"); }
+  // Ping operations
+  async createPing(pingData: InsertPing & { userId: number }): Promise<Ping> {
+    const ping: Ping = {
+      id: this.nextPingId++,
+      userId: pingData.userId,
+      latitude: pingData.latitude,
+      longitude: pingData.longitude,
+      message: pingData.message || null,
+      parentPingId: pingData.parentPingId || null,
+      createdAt: new Date(),
+    };
+    
+    this.pings.set(ping.id, ping);
+    return ping;
+  }
+
+  async getUserPings(userId: number): Promise<Ping[]> {
+    return Array.from(this.pings.values())
+      .filter(ping => ping.userId === userId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async getLatestUserPings(userId: number, limit: number): Promise<Ping[]> {
+    return Array.from(this.pings.values())
+      .filter(ping => ping.userId === userId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, limit);
+  }
+
+  async getPingById(id: number): Promise<Ping | undefined> {
+    return this.pings.get(id);
+  }
+
+  async respondToPing(parentId: number, pingData: InsertPing & { userId: number }): Promise<Ping> {
+    const parentPing = this.pings.get(parentId);
+    if (!parentPing) {
+      throw new Error('Parent ping not found');
+    }
+
+    const ping: Ping = {
+      id: this.nextPingId++,
+      userId: pingData.userId,
+      latitude: pingData.latitude,
+      longitude: pingData.longitude,
+      message: pingData.message || null,
+      parentPingId: parentId,
+      createdAt: new Date(),
+    };
+    
+    this.pings.set(ping.id, ping);
+    return ping;
+  }
   async createMission(): Promise<Mission> { throw new Error("Not implemented for demo"); }
   async getUserMissions(): Promise<Mission[]> { return []; }
   async getAllMissions(): Promise<Mission[]> { return []; }
