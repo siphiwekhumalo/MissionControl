@@ -13,6 +13,9 @@ app.use((req, res, next) => {
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
+  // Debug all requests to see what's happening
+  console.log(`[DEBUG] ${req.method} ${req.path} - Headers:`, req.headers);
+
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
     capturedJsonResponse = bodyJson;
