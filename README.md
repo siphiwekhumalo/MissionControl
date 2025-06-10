@@ -52,7 +52,7 @@ Open `http://localhost:5173` in your browser
 
 | Username    | Password      | Clearance Level |
 |-------------|---------------|-----------------|
-| `siphiwe`   | `1924@Khumalo`| Senior Agent    |
+| `siphiwe`   | `1924@Khumalo`| Senior Agent(Recommended)    |
 | `agent007`  | `secret123`   | Field Agent     |
 | `fieldagent`| `field123`    | Operations      |
 
