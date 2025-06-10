@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { Request, Response, NextFunction } from "express";
-import { storage } from "./memoryStorage";
+import { storage } from "./storage";
 
 const JWT_SECRET = process.env.JWT_SECRET || "mission-control-secret-key-2024";
 const JWT_EXPIRES_IN = "7d";

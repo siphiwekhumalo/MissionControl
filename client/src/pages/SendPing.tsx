@@ -33,11 +33,11 @@ export default function SendPing() {
   const [longitude, setLongitude] = useState("");
   const [message, setMessage] = useState("");
   const [parentPingId, setParentPingId] = useState<string>("");
-
-
+  const [isGeneratingCoords, setIsGeneratingCoords] = useState(false);
+  const [coordinateSource, setCoordinateSource] = useState<"manual" | "gps" | "random">("random");
 
   // Get latest pings for response functionality
-  const { data: latestPings } = useQuery<Ping[]>({
+  const { data: latestPings } = useQuery({
     queryKey: ["/api/pings/latest"],
     enabled: isAuthenticated,
   });
@@ -63,7 +63,38 @@ export default function SendPing() {
     enabled: isAuthenticated,
   });
 
-
+  const generateCoordinates = async () => {
+    setIsGeneratingCoords(true);
+    
+    if (coordinateSource === "gps") {
+      try {
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          });
+        });
+        setLatitude(position.coords.latitude.toFixed(4));
+        setLongitude(position.coords.longitude.toFixed(4));
+        toast({
+          title: "GPS Location Acquired",
+          description: "Real coordinates captured successfully.",
+        });
+      } catch (error) {
+        toast({
+          title: "GPS Failed",
+          description: "Falling back to tactical coordinates.",
+          variant: "destructive",
+        });
+        generateRandomCoordinates();
+      }
+    } else {
+      generateRandomCoordinates();
+    }
+    
+    setIsGeneratingCoords(false);
+  };
 
   const generateRandomCoordinates = () => {
     const lat = (Math.random() * 180 - 90).toFixed(4);
@@ -75,13 +106,13 @@ export default function SendPing() {
   // Generate initial coordinates
   useEffect(() => {
     if (!latitude && !longitude) {
-      generateRandomCoordinates();
+      generateCoordinates();
     }
   }, [latitude, longitude]);
 
   const sendPingMutation = useMutation({
     mutationFn: async (data: { latitude: string; longitude: string; message?: string }) => {
-      if (pingType === "response" && Array.isArray(latestPings) && latestPings.length > 0) {
+      if (pingType === "response" && latestPings && latestPings.length > 0) {
         // Use the latest ping as the parent for response
         const latestPingId = latestPings[0].id;
         return await apiRequest("POST", "/api/pings", {
@@ -315,6 +346,60 @@ export default function SendPing() {
                 <div>
                   <Label className="bond-subtitle text-base font-medium text-white mb-4 block">Mission Coordinates</Label>
                   
+                  {/* Coordinate Source Selection */}
+                  <div className="mb-6">
+                    <Label className="text-sm text-mission-silver mb-3 block">Coordinate Source</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <Button
+                        type="button"
+                        variant={coordinateSource === "random" ? "default" : "outline"}
+                        onClick={() => setCoordinateSource("random")}
+                        className={`h-auto p-4 flex-col space-y-2 ${
+                          coordinateSource === "random" 
+                            ? "bg-mission-green/20 border-mission-green text-mission-green hover:bg-mission-green/30" 
+                            : "border-mission-surface text-mission-silver hover:border-mission-green hover:text-mission-green"
+                        }`}
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                        <span className="text-xs">Tactical</span>
+                      </Button>
+                      
+                      <Button
+                        type="button"
+                        variant={coordinateSource === "gps" ? "default" : "outline"}
+                        onClick={() => setCoordinateSource("gps")}
+                        className={`h-auto p-4 flex-col space-y-2 ${
+                          coordinateSource === "gps" 
+                            ? "bg-mission-blue/20 border-mission-blue text-mission-blue hover:bg-mission-blue/30" 
+                            : "border-mission-surface text-mission-silver hover:border-mission-blue hover:text-mission-blue"
+                        }`}
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        <span className="text-xs">GPS</span>
+                      </Button>
+                      
+                      <Button
+                        type="button"
+                        variant={coordinateSource === "manual" ? "default" : "outline"}
+                        onClick={() => setCoordinateSource("manual")}
+                        className={`h-auto p-4 flex-col space-y-2 ${
+                          coordinateSource === "manual" 
+                            ? "bg-mission-gold/20 border-mission-gold text-mission-gold hover:bg-mission-gold/30" 
+                            : "border-mission-surface text-mission-silver hover:border-mission-gold hover:text-mission-gold"
+                        }`}
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                        <span className="text-xs">Manual</span>
+                      </Button>
+                    </div>
+                  </div>
+                  
                   <div className="glass gradient-border rounded-xl p-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                       <div>
@@ -323,7 +408,8 @@ export default function SendPing() {
                           type="text"
                           value={latitude}
                           onChange={(e) => setLatitude(e.target.value)}
-                          className="w-full bg-mission-surface/50 border border-mission-surface rounded-lg px-4 py-3 text-white font-mono text-sm placeholder-mission-silver/50 focus:border-mission-green focus:ring-1 focus:ring-mission-green transition-colors"
+                          disabled={coordinateSource !== "manual"}
+                          className="w-full bg-mission-surface/50 border border-mission-surface rounded-lg px-4 py-3 text-white font-mono text-sm placeholder-mission-silver/50 focus:border-mission-green focus:ring-1 focus:ring-mission-green transition-colors disabled:opacity-50"
                           placeholder="0.0000"
                         />
                       </div>
@@ -333,24 +419,37 @@ export default function SendPing() {
                           type="text"
                           value={longitude}
                           onChange={(e) => setLongitude(e.target.value)}
-                          className="w-full bg-mission-surface/50 border border-mission-surface rounded-lg px-4 py-3 text-white font-mono text-sm placeholder-mission-silver/50 focus:border-mission-green focus:ring-1 focus:ring-mission-green transition-colors"
+                          disabled={coordinateSource !== "manual"}
+                          className="w-full bg-mission-surface/50 border border-mission-surface rounded-lg px-4 py-3 text-white font-mono text-sm placeholder-mission-silver/50 focus:border-mission-green focus:ring-1 focus:ring-mission-green transition-colors disabled:opacity-50"
                           placeholder="0.0000"
                         />
                       </div>
                     </div>
                     
-                    <Button
-                      type="button"
-                      onClick={generateRandomCoordinates}
-                      className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-green/80 hover:to-mission-blue/80 text-white font-medium py-3 rounded-lg transition-all transform hover:scale-[1.02]"
-                    >
-                      <div className="flex items-center justify-center space-x-2">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-                        </svg>
-                        <span>Generate Coordinates</span>
-                      </div>
-                    </Button>
+                    {coordinateSource !== "manual" && (
+                      <Button
+                        type="button"
+                        onClick={generateCoordinates}
+                        disabled={isGeneratingCoords}
+                        className="w-full bg-gradient-to-r from-mission-green to-mission-blue hover:from-mission-green/80 hover:to-mission-blue/80 text-white font-medium py-3 rounded-lg transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isGeneratingCoords ? (
+                          <div className="flex items-center justify-center space-x-2">
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            <span>Acquiring Coordinates...</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center space-x-2">
+                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                            </svg>
+                            <span>
+                              {coordinateSource === "gps" ? "Acquire GPS Location" : "Generate Tactical Coordinates"}
+                            </span>
+                          </div>
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </div>
 
