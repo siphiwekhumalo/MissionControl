@@ -66,6 +66,8 @@ export function useJWTAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData): Promise<AuthResponse> => {
+      console.log("Starting login with:", credentials);
+      
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
@@ -74,12 +76,24 @@ export function useJWTAuth() {
         body: JSON.stringify(credentials),
       });
 
+      console.log("Login response status:", response.status);
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Login failed");
+        const errorText = await response.text();
+        console.error("Login error response:", errorText);
+        let errorMessage = "Login failed";
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
-      return response.json();
+      const result = await response.json();
+      console.log("Login successful:", result);
+      return result;
     },
     onSuccess: (data) => {
       localStorage.setItem("token", data.token);
@@ -100,6 +114,8 @@ export function useJWTAuth() {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: RegisterData): Promise<AuthResponse> => {
+      console.log("Starting registration with:", credentials);
+      
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
@@ -108,12 +124,24 @@ export function useJWTAuth() {
         body: JSON.stringify(credentials),
       });
 
+      console.log("Registration response status:", response.status);
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Registration failed");
+        const errorText = await response.text();
+        console.error("Registration error response:", errorText);
+        let errorMessage = "Registration failed";
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
-      return response.json();
+      const result = await response.json();
+      console.log("Registration successful:", result);
+      return result;
     },
     onSuccess: (data) => {
       localStorage.setItem("token", data.token);
