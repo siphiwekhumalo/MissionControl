@@ -12,11 +12,19 @@ For local development, you need to run the frontend and backend on separate port
 npx tsx server-local-dev.ts
 ```
 
-### 2. Start the Frontend Dev Server
+### 2. Start the Frontend Dev Server (in a separate terminal)
 ```bash
 # Run the frontend on port 5000
 npm run dev
 ```
+
+### Windows Batch Script
+You can also use the provided batch script:
+```cmd
+dev.bat
+```
+
+This will automatically start the local development server on port 3001.
 
 ### Environment Configuration
 
