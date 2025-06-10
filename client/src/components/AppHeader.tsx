@@ -130,6 +130,40 @@ export default function AppHeader() {
                 <span className="font-medium">{item.label}</span>
               </Link>
             ))}
+            
+            {/* Mobile user info and logout */}
+            <div className="border-t border-mission-surface/50 pt-3 mt-3">
+              <div className="flex items-center justify-between px-4 py-3">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-mission-green via-mission-gold to-mission-blue rounded-lg flex items-center justify-center">
+                    <span className="text-xs font-bold text-white">
+                      {user?.firstName?.[0] || user?.username?.[0] || "A"}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-white">
+                      {user?.firstName || user?.lastName 
+                        ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
+                        : user?.username || "Agent 007"
+                      }
+                    </p>
+                    <p className="text-xs text-mission-silver">Level 9 Clearance</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="p-2 text-mission-silver hover:text-mission-red transition-colors rounded-lg"
+                  title="Secure Logout"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

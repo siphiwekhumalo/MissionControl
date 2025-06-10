@@ -103,7 +103,7 @@ export default function Dashboard() {
         </div>
 
         {/* Mission Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
           <Link href="/all-pings">
             <div className="glass gradient-border rounded-2xl p-6 glow-green hover:bg-mission-surface/30 transition-all-smooth cursor-pointer group">
               <div className="flex items-center justify-between">
