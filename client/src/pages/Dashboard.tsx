@@ -210,7 +210,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 ) : Array.isArray(latestPings) && latestPings.length > 0 ? (
-                  latestPings.map((ping: Ping) => {
+                  latestPings.map((ping: Ping, index: number) => {
                     const status = getStatus(ping);
                     return (
                       <div key={ping.id} className="p-6 hover:bg-mission-surface/30 transition-all-smooth group">
@@ -247,17 +247,25 @@ export default function Dashboard() {
                               )}
                             </div>
                           </div>
-                          <Link href={`/send-ping?parent=${ping.id}`} className="inline-block">
-                            <button 
-                              className="p-2 text-mission-silver/60 hover:text-mission-green transition-colors opacity-0 group-hover:opacity-100 rounded-lg hover:bg-mission-surface/50 cursor-pointer"
-                              title={`Respond to transmission #${ping.id}`}
-                              type="button"
-                            >
+                          {index === 0 ? (
+                            <Link href="/send-ping?type=response" className="inline-block">
+                              <button 
+                                className="p-2 text-mission-silver/60 hover:text-mission-green transition-colors opacity-0 group-hover:opacity-100 rounded-lg hover:bg-mission-surface/50 cursor-pointer"
+                                title="Respond to latest transmission"
+                                type="button"
+                              >
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                                </svg>
+                              </button>
+                            </Link>
+                          ) : (
+                            <div className="p-2 text-mission-surface/40 rounded-lg cursor-not-allowed opacity-0 group-hover:opacity-100" title="Only latest transmission can be responded to">
                               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-13h4v6h-4zm0 8h4v2h-4z"/>
                               </svg>
-                            </button>
-                          </Link>
+                            </div>
+                          )}
                         </div>
                       </div>
                     );

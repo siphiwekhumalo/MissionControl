@@ -36,13 +36,12 @@ export default function SendPing() {
   const [isGeneratingCoords, setIsGeneratingCoords] = useState(false);
   const [coordinateSource, setCoordinateSource] = useState<"manual" | "gps" | "random">("random");
 
-  // Check for parent parameter in URL
+  // Check for response type parameter in URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const parentId = urlParams.get('parent');
-    if (parentId) {
+    const type = urlParams.get('type');
+    if (type === 'response') {
       setPingType("response");
-      setParentPingId(parentId);
     }
   }, []);
 
@@ -181,8 +180,8 @@ export default function SendPing() {
       pingData.message = message;
     }
     
-    if (pingType === "response" && Array.isArray(allPings) && (allPings as Ping[]).length > 0) {
-      pingData.parentPingId = (allPings as Ping[])[0].id;
+    if (pingType === "response" && allPings && allPings.length > 0) {
+      pingData.parentPingId = allPings[0].id;
     }
     
     sendPingMutation.mutate(pingData);
