@@ -47,6 +47,9 @@ export default function Dashboard() {
     enabled: isAuthenticated,
   });
 
+  // Debug log to see ping data structure
+  console.log('All pings data:', allPings);
+
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -235,12 +238,19 @@ export default function Dashboard() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-3 mb-2">
-                              {ping.parentPingId && (
+                              {ping.parentPingId ? (
                                 <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-mission-blue/20 text-mission-blue border border-mission-blue/30">
                                   <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>
                                   </svg>
                                   REPLY
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-mission-green/20 text-mission-green border border-mission-green/30">
+                                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                  </svg>
+                                  INITIAL
                                 </span>
                               )}
                               <span className={`text-sm font-medium text-${status.color} uppercase tracking-wide`}>{status.status}</span>
