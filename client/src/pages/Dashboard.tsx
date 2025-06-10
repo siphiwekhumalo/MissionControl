@@ -213,10 +213,20 @@ export default function Dashboard() {
                   latestPings.map((ping: Ping, index: number) => {
                     const status = getStatus(ping);
                     return (
-                      <div key={ping.id} className="p-6 hover:bg-mission-surface/30 transition-all-smooth group">
-                        <div className="flex items-center space-x-4">
+                      <div key={ping.id} className={`p-6 hover:bg-mission-surface/30 transition-all-smooth group ${ping.parentPingId ? 'border-l-2 border-mission-blue/50 ml-4' : ''}`}>
+                        <div className="flex items-start space-x-4">
+                          {ping.parentPingId && (
+                            <div className="flex flex-col items-center pt-1">
+                              <div className="w-6 h-6 bg-mission-blue/20 rounded-full flex items-center justify-center mb-2">
+                                <svg className="w-3 h-3 text-mission-blue" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                              </div>
+                              <div className="w-px h-8 bg-mission-blue/30"></div>
+                            </div>
+                          )}
                           <div className="relative">
-                            <div className={`w-12 h-12 bg-gradient-to-br from-${status.color}/20 to-${status.color}/10 rounded-xl flex items-center justify-center backdrop-blur-sm`}>
+                            <div className={`w-12 h-12 bg-gradient-to-br from-${status.color}/20 to-${status.color}/10 rounded-xl flex items-center justify-center backdrop-blur-sm ${ping.parentPingId ? 'border border-mission-blue/30' : ''}`}>
                               <div className={`w-2 h-2 bg-${status.color} rounded-full ${status.pulse ? 'pulse-glow' : ''}`}></div>
                             </div>
                             <div className="absolute -top-1 -right-1 w-4 h-4 bg-mission-dark rounded-full flex items-center justify-center">
@@ -225,9 +235,35 @@ export default function Dashboard() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-3 mb-2">
+                              {ping.parentPingId && (
+                                <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-mission-blue/20 text-mission-blue border border-mission-blue/30">
+                                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>
+                                  </svg>
+                                  REPLY
+                                </span>
+                              )}
                               <span className={`text-sm font-medium text-${status.color} uppercase tracking-wide`}>{status.status}</span>
                               <span className="text-sm text-mission-silver">{formatTimeAgo(ping.createdAt)}</span>
                             </div>
+                            
+                            {ping.parentPingId && (
+                              <div className="mb-3 p-3 bg-mission-surface/20 rounded-lg border border-mission-blue/20">
+                                <div className="flex items-center space-x-2 text-xs text-mission-blue">
+                                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 3L5 6.99h3V14h2V6.99h3L9 3zm7 14.01V10h-2v7.01h-3L15 21l4-3.99h-3z"/>
+                                  </svg>
+                                  <span>Responding to transmission #{ping.parentPingId.toString().padStart(3, '0')}</span>
+                                </div>
+                              </div>
+                            )}
+
+                            {ping.message && (
+                              <div className="mb-3 p-3 bg-mission-surface/10 rounded-lg">
+                                <p className="text-sm text-white italic">"{ping.message}"</p>
+                              </div>
+                            )}
+                            
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                               <div className="flex items-center space-x-2">
                                 <svg className="w-4 h-4 text-mission-silver/60" fill="currentColor" viewBox="0 0 24 24">
@@ -236,15 +272,15 @@ export default function Dashboard() {
                                 <span className="text-mission-silver/80">Coordinates:</span>
                                 <span className="text-white font-mono text-xs">{ping.latitude}, {ping.longitude}</span>
                               </div>
-                              {ping.parentPingId && (
-                                <div className="flex items-center space-x-2">
-                                  <svg className="w-4 h-4 text-mission-silver/60" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M9 3L5 6.99h3V14h2V6.99h3L9 3zm7 14.01V10h-2v7.01h-3L15 21l4-3.99h-3z"/>
-                                  </svg>
-                                  <span className="text-mission-silver/80">Response to:</span>
-                                  <span className="text-mission-blue font-mono text-xs">#{ping.parentPingId.toString().padStart(3, '0')}</span>
-                                </div>
-                              )}
+                              <div className="flex items-center space-x-2">
+                                <svg className="w-4 h-4 text-mission-silver/60" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+                                </svg>
+                                <span className="text-mission-silver/80">Type:</span>
+                                <span className={`text-xs font-medium ${ping.parentPingId ? 'text-mission-blue' : 'text-mission-green'}`}>
+                                  {ping.parentPingId ? 'Response' : 'Initial'}
+                                </span>
+                              </div>
                             </div>
                           </div>
                           {index === 0 ? (
