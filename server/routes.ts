@@ -103,6 +103,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Logout route
+  app.post('/api/logout', (req, res) => {
+    res.json({ message: "Logged out successfully" });
+  });
+
   app.get('/api/user', authenticate, async (req: AuthRequest, res) => {
     try {
       const user = await storage.getUser(req.userId!);
