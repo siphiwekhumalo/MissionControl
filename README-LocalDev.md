@@ -1,46 +1,60 @@
-# Local Development Setup
+# Local Development Setup - WORKING ✅
 
-This project is configured to work in both local development and Replit environments.
+This project now supports simplified local development without database dependencies.
 
-## Local Development
-
-For local development, you need to run the frontend and backend on separate ports:
+## Quick Start
 
 ### 1. Start the Backend API Server
 ```bash
-# Run the backend on port 3001
-npx tsx server-local-dev.ts
+# Using the batch script (recommended)
+dev.bat
+
+# Or run directly:
+npx cross-env NODE_ENV=development tsx server-local-dev.ts
 ```
 
 ### 2. Start the Frontend Dev Server (in a separate terminal)
 ```bash
-# Run the frontend on port 5000
 npm run dev
 ```
 
-### Windows Batch Script
-You can also use the provided batch script:
-```cmd
-dev.bat
-```
+### 3. Access the Application
+- Frontend: http://localhost:5000
+- Backend API: http://localhost:3001
 
-This will automatically start the local development server on port 3001.
+## Demo Users (Ready for Testing)
 
-### Environment Configuration
+Three pre-configured users with hashed passwords:
+
+- **Username**: `siphiwe`, **Password**: `1924@Khumalo`
+- **Username**: `agent007`, **Password**: `secret123`  
+- **Username**: `fieldagent`, **Password**: `field123`
+
+## Architecture
+
+- **Backend**: Express.js on port 3001 with in-memory storage
+- **Frontend**: Vite dev server on port 5000 
+- **Authentication**: JWT tokens with bcrypt password hashing
+- **Storage**: Simple in-memory implementation (no database required)
+
+## Environment Detection
 
 The system automatically detects the environment:
 
-- **Local Development**: 
-  - Frontend: `http://localhost:5000` (Vite dev server)
-  - Backend API: `http://localhost:3001` (Express server)
-  
-- **Replit Environment**: 
-  - Both frontend and backend run on the same domain
-  - Uses relative URLs for API calls
+- **Local Development**: Uses `http://localhost:3001` for API calls
+- **Replit Environment**: Uses relative URLs for API calls
 
-### Test the Setup
+## Key Features
 
-1. Backend API health check:
+- No PostgreSQL installation required
+- No DATABASE_URL environment variable needed
+- Instant setup with demo users
+- Full authentication system working
+- Hot reload for development
+
+## Test the Setup
+
+1. Backend health check:
 ```bash
 curl http://localhost:3001/api/health
 ```
@@ -52,28 +66,15 @@ curl -X POST http://localhost:3001/api/login \
   -d '{"username":"siphiwe","password":"1924@Khumalo"}'
 ```
 
-### Database Setup
+## Files Added/Modified
 
-The application requires a PostgreSQL database. You have two options:
+- `server-local-dev.ts` - Local development server
+- `server/simpleStorage.ts` - In-memory storage implementation
+- `server/routes.ts` - Updated to use simple storage
+- `client/src/lib/environmentConfig.ts` - Environment detection
 
-#### Option 1: Use Replit (Recommended)
-The Replit environment already has a database configured and working. No additional setup required.
+## Troubleshooting
 
-#### Option 2: Local PostgreSQL Setup
-1. Install PostgreSQL locally
-2. Create a database: `createdb missioncontrol`
-3. Create a `.env.local` file in the project root:
-```env
-DATABASE_URL=postgresql://username:password@localhost:5432/missioncontrol
-SESSION_SECRET=your-secret-key-here
-NODE_ENV=development
-```
-4. Run database migrations: `npm run db:push`
-
-**Note**: Local database setup requires additional PostgreSQL installation and configuration. For quick testing, the Replit environment is easier to use.
-
-### Authentication
-
-Test accounts:
-- Username: `siphiwe`, Password: `1924@Khumalo`
-- Create new accounts via the registration form
+- **Port 3001 in use**: Kill existing processes
+- **Module errors**: Run `npm install`
+- **Auth issues**: Clear browser localStorage
