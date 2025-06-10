@@ -22,7 +22,6 @@ export default function AppHeader() {
     { path: "/send-ping", label: "Send Ping", icon: "📡" },
     { path: "/trails", label: "Mission Trails", icon: "🔗" },
     { path: "/all-pings", label: "All Pings", icon: "📊" },
-    { path: "/security", label: "Security Center", icon: "🛡️" },
   ];
 
   return (

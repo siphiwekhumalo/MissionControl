@@ -1,148 +1,62 @@
-# MissionControl - James Bond Ping Transmission System
+# MissionControl - Spy-Themed Ping Transmission System
 
-A secure, spy-themed web application for mission tracking and communication, designed to provide an immersive intelligence operations experience with enhanced user interaction and dynamic mission management.
+A secure, spy-themed web application for ping transmission and trail management, designed to provide an immersive intelligence operations experience with real-time communication tracking.
 
 ![Security Status](https://img.shields.io/badge/Security-Classified-red)
 ![Build Status](https://img.shields.io/badge/Build-Operational-green)
 ![Agent Status](https://img.shields.io/badge/Agents-Active-blue)
 
-## 🚀 Quick Start - Local Development
+## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- Git
+- npm package manager
 
-### 1. Clone and Setup
+### Installation and Setup
+
+1. **Clone and install dependencies**
 ```bash
 git clone <your-repo-url>
 cd MissionControl
 npm install
 ```
 
-### 2. Start Backend Server
-
-**Windows Command Prompt:**
-```cmd
-start-local-dev.bat
-```
-
-**Windows PowerShell:**
-```powershell
-.\dev-local.ps1
-```
-
-**Manual (any platform):**
+2. **Start the application**
 ```bash
-node server-local-simple.js
+npm run dev
 ```
 
-Backend runs on: `http://localhost:3001`
-
-### 3. Start Frontend (new terminal)
-```bash
-npx vite
-```
-
-Frontend runs on: `http://localhost:5173`
-
-### 4. Access Application
-Open `http://localhost:5173` in your browser
+The application runs on `http://localhost:5000` with both frontend and backend on a single port.
 
 ## 🔐 Demo Agent Credentials
 
-| Username    | Password      | Clearance Level |
-|-------------|---------------|-----------------|
-| `siphiwe`   | `1924@Khumalo`| Senior Agent    |
-| `agent007`  | `secret123`   | Field Agent     |
-| `fieldagent`| `field123`    | Operations      |
+| Username    | Password      | Role          |
+|-------------|---------------|---------------|
+| `siphiwe`   | `1924@Khumalo`| Senior Agent  |
+| `agent007`  | `secret123`   | Field Agent   |
+| `fieldagent`| `field123`    | Operations    |
 
-## 🎯 Mission Overview
+## 🎯 Core Features
 
-MissionControl is a sophisticated web application that allows intelligence agents to:
-- Send encrypted ping transmissions with GPS coordinates
-- Create interconnected mission trails through response networks
-- Monitor real-time security status and audit logs
-- Manage classified operations through a secure dashboard
+### Ping Transmission System
+- **Send Encrypted Pings**: Create secure transmissions with GPS coordinates
+- **Trail Networks**: Build interconnected response chains through ping replies
+- **Real-time Dashboard**: Monitor all ping activity and transmission trails
+- **Response Management**: Latest-ping-only response enforcement for security
 
-## ⚡ Testing Ping Operations
-
-1. **Authentication**: Log in with demo credentials
-2. **Navigation**: Access "Send Ping" from dashboard
-3. **Coordinate Generation**: Click "Generate Coordinates" for random GPS
-4. **Message Encryption**: Add optional classified message
-5. **Transmission**: Click "Transmit Ping"
-6. **Trail Management**: View and respond to pings in dashboard
-7. **Response Networks**: Create interconnected mission trails
-
-## 🛠️ Troubleshooting
-
-### Authentication Errors
-If seeing "Token for non-existent agent" errors:
-- Clear browser storage: F12 → Application → Clear Storage
-- Use incognito/private browsing mode
-- Log in fresh with demo credentials
-
-### Port Conflicts
-- Backend: port 3001 (modify in `server-local-simple.js`)
-- Frontend: port 5173 (Vite default)
-
-### CORS Configuration
-Local server pre-configured for ports 5000 and 5173
-
-## 🛡️ Security Features
-
-- **JWT Authentication**: Multi-layer token-based security system
+### Authentication & Security
+- **JWT Authentication**: Secure token-based access control
 - **User Isolation**: Agents can only access their own transmissions
 - **Audit Logging**: Real-time security event monitoring
-- **Access Controls**: Ownership verification for all operations
-- **Secure Headers**: XSS protection and content security policies
-- **Encrypted Storage**: Persistent file-based storage with security audit trails
+- **Session Management**: Secure session handling with proper expiration
 
-## 🚀 Quick Start
+## ⚡ Quick Testing Guide
 
-### Prerequisites
-
-- Node.js 18+ or 20+
-- npm or yarn package manager
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd missioncontrol
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   
-   **For Windows (Command Prompt):**
-   ```bash
-   dev.bat
-   ```
-   
-   **For Windows (PowerShell):**
-   ```bash
-   .\dev.ps1
-   ```
-   
-   **For macOS/Linux:**
-   ```bash
-   NODE_ENV=development tsx server/index.ts
-   ```
-   
-   **Alternative (cross-platform):**
-   ```bash
-   npx cross-env NODE_ENV=development tsx server/index.ts
-   ```
-
-4. **Access the application**
-   - Open your browser to `http://localhost:5000`
-   - The app runs on a single port with both frontend and backend
+1. **Login**: Use demo credentials to authenticate
+2. **Send Ping**: Navigate to "Send Ping" and create a transmission
+3. **Generate Coordinates**: Use the coordinate generator for random GPS locations
+4. **View Trails**: Check "Mission Trails" to see ping networks
+5. **Create Responses**: Reply to existing pings to build trail networks
 
 ## 🏗️ Architecture
 
@@ -151,38 +65,30 @@ Local server pre-configured for ports 5000 and 5173
 **Frontend:**
 - React 18 with TypeScript
 - Vite for development and building
-- TailwindCSS for styling with custom Bond theme
+- TailwindCSS with custom spy theme
 - Three.js for immersive 3D backgrounds
-- TanStack Query for data fetching and caching
+- TanStack Query for data management
 - Wouter for lightweight routing
-- Shadcn/ui components with custom styling
+- Shadcn/ui components
 
 **Backend:**
 - Express.js with TypeScript
-- Custom JWT authentication system
-- File-based persistent storage
-- Compression middleware for performance
-- Security audit logging
-
-**Key Features:**
-- Glass morphism UI design
-- Real-time security monitoring
-- Trail-based mission networks
-- Responsive design for all devices
+- JWT authentication system
+- In-memory storage with demo data
+- Compression and security middleware
+- RESTful API design
 
 ### Project Structure
 
 ```
-missioncontrol/
+MissionControl/
 ├── client/                 # Frontend React application
 │   ├── src/
 │   │   ├── components/     # Reusable UI components
-│   │   │   ├── ui/         # Shadcn/ui components
+│   │   │   ├── ui/         # Shadcn/ui component library
 │   │   │   ├── AppHeader.tsx
-│   │   │   ├── SecurityIndicator.tsx
 │   │   │   └── ThreeBackground.tsx
 │   │   ├── hooks/          # Custom React hooks
-│   │   │   ├── useAuth.ts
 │   │   │   ├── useJWTAuth.ts
 │   │   │   └── use-toast.ts
 │   │   ├── lib/            # Utility functions
@@ -195,66 +101,21 @@ missioncontrol/
 │   │   │   ├── SendPing.tsx
 │   │   │   ├── AllPings.tsx
 │   │   │   ├── TrailView.tsx
-│   │   │   └── SecurityDashboard.tsx
+│   │   │   └── Landing.tsx
 │   │   ├── App.tsx         # Main application component
 │   │   ├── main.tsx        # Application entry point
-│   │   └── index.css       # Global styles
+│   │   └── index.css       # Global styles and theme
 │   └── index.html          # HTML template
 ├── server/                 # Backend Express application
 │   ├── auth.ts             # JWT authentication system
-│   ├── db.ts               # Database configuration
+│   ├── memoryStorage.ts    # In-memory data storage
 │   ├── routes.ts           # API route definitions
-│   ├── storage.ts          # Persistent storage implementation
+│   ├── storage.ts          # Storage interface
 │   ├── index.ts            # Server entry point
 │   └── vite.ts             # Vite integration
 ├── shared/                 # Shared types and schemas
 │   └── schema.ts           # Data models and validation
-├── data/                   # Persistent storage files
-│   └── storage.json        # User and ping data
 └── package.json            # Dependencies and scripts
-```
-
-## 🔐 Authentication System
-
-The application uses a custom JWT-based authentication system:
-
-### User Registration
-```bash
-POST /api/register
-Content-Type: application/json
-
-{
-  "username": "agent.bond",
-  "email": "james.bond@mi6.gov.uk",
-  "password": "classified007",
-  "firstName": "James",
-  "lastName": "Bond"
-}
-```
-
-### User Login
-```bash
-POST /api/login
-Content-Type: application/json
-
-{
-  "username": "agent.bond",
-  "password": "classified007"
-}
-```
-
-Response includes JWT token for subsequent requests:
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": 1,
-    "username": "agent.bond",
-    "email": "james.bond@mi6.gov.uk",
-    "firstName": "James",
-    "lastName": "Bond"
-  }
-}
 ```
 
 ## 📡 API Endpoints
@@ -267,8 +128,8 @@ Response includes JWT token for subsequent requests:
 ### Ping Operations
 - `POST /api/pings` - Create new transmission
 - `GET /api/pings` - Get all agent transmissions
-- `GET /api/pings/latest` - Get latest 3 transmissions
-- `POST /api/pings/:id` - Respond to existing transmission (create trail)
+- `GET /api/pings/latest` - Get latest transmissions
+- `POST /api/pings/:id` - Respond to existing transmission
 
 ### Example: Creating a Transmission
 ```bash
@@ -296,9 +157,9 @@ Content-Type: application/json
 }
 ```
 
-## 🎨 Styling System
+## 🎨 Theme & Styling
 
-The application uses a custom James Bond-inspired theme:
+The application uses a custom James Bond-inspired design system:
 
 ### Color Palette
 ```css
@@ -313,11 +174,12 @@ The application uses a custom James Bond-inspired theme:
 }
 ```
 
-### Custom Components
+### Design Features
 - Glass morphism effects with backdrop blur
-- Gradient borders and hover animations
-- Three.js animated backgrounds (particles, radar, matrix)
-- Custom security badges and indicators
+- Gradient borders and animations
+- Three.js animated backgrounds
+- Responsive mobile-first design
+- Accessibility-focused UI components
 
 ## 🔧 Development
 
@@ -333,143 +195,117 @@ npm run build
 # Preview production build
 npm run preview
 
-# Run type checking
+# Type checking
 npm run type-check
-
-# Database operations (if using Drizzle)
-npm run db:push
-npm run db:generate
-npm run db:migrate
 ```
 
-### Environment Variables
+### Environment Configuration
 
-Create a `.env` file in the root directory:
+Create a `.env` file for custom configuration:
 
 ```env
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-here
-
-# Session Configuration  
-SESSION_SECRET=your-session-secret-here
 
 # Development
 NODE_ENV=development
 PORT=5000
 ```
 
-### Custom Development
+### Adding New Features
 
-#### Adding New Pages
-1. Create page component in `client/src/pages/`
+#### New Pages
+1. Create component in `client/src/pages/`
 2. Add route to `client/src/App.tsx`
 3. Update navigation in `client/src/components/AppHeader.tsx`
 
-#### Adding New API Endpoints
+#### New API Endpoints
 1. Define route in `server/routes.ts`
-2. Add authentication middleware if needed
+2. Add authentication middleware
 3. Update storage interface in `server/storage.ts`
 4. Add types to `shared/schema.ts`
-
-#### Customizing Security
-- Modify authentication logic in `server/auth.ts`
-- Update audit logging in route handlers
-- Configure security headers in `server/routes.ts`
 
 ## 🛠️ Troubleshooting
 
 ### Common Issues
 
-**Windows Environment Variable Error**
-If you get `'NODE_ENV' is not recognized as an internal or external command`:
-```bash
-# Use the provided Windows batch file
-dev.bat
+**Authentication Problems**
+- Clear browser storage: F12 → Application → Clear Storage
+- Use incognito/private browsing mode
+- Verify JWT_SECRET environment variable
 
-# Or use the PowerShell script
-.\dev.ps1
-
-# Or install cross-env globally
-npm install -g cross-env
-npx cross-env NODE_ENV=development tsx server/index.ts
-```
-
-**Port Already in Use**
+**Port Conflicts**
 ```bash
 # Kill process on port 5000
 npx kill-port 5000
 
-# On Windows, find and kill the process
+# On Windows
 netstat -ano | findstr :5000
 taskkill /PID <PID> /F
 ```
 
-**Authentication Issues**
-- Check JWT_SECRET environment variable
-- Verify token expiration (24 hours default)
-- Clear localStorage and re-authenticate
-
-**Storage Issues**
-- Check `data/storage.json` file permissions
-- Verify file path accessibility
-- Review storage audit logs
-
 **Build Issues**
 ```bash
-# Clear node modules and reinstall
+# Clear dependencies and reinstall
 rm -rf node_modules package-lock.json
 npm install
 ```
 
-### Performance Optimization
+### Performance Features
 
-The application includes several performance optimizations:
 - Response compression (gzip)
-- Intelligent caching with private headers
-- Debounced file I/O operations
+- Intelligent caching headers
 - Query result caching
 - Optimized bundle splitting
+- Three.js performance optimization
 
-## 🔍 Security Audit Logs
+## 🔍 Security Features
 
-Monitor security events in real-time through the console:
+### Authentication System
+- JWT token-based authentication
+- Secure password hashing with bcrypt
+- Session expiration management
+- Protected route middleware
 
+### Audit Logging
+Monitor security events in the console:
 ```
-[SECURITY] Agent 2 authenticated from 172.31.128.46 at 2025-06-09T20:21:23.007Z
-[SECURITY] Agent 2 accessed 5 transmissions at 2025-06-09T20:21:23.364Z
-[SECURITY] Agent 2 created transmission #7 at coordinates [35.7208, 164.0319]
-[SECURITY] Agent 2 responded to transmission #7 with new transmission #8
+[SECURITY] Agent 1 authenticated from 172.31.128.9 at 2025-06-10T12:37:49.228Z
+[SECURITY] Agent 1 created transmission #101 at coordinates [4.5485, 103.6833]
 ```
 
-Access the Security Dashboard at `/security` for comprehensive monitoring.
+### Data Protection
+- User data isolation
+- Secure storage interfaces
+- Input validation and sanitization
+- XSS protection headers
 
-## 📱 Features
+## 📱 User Interface
 
-### Core Functionality
-- **Agent Dashboard**: Mission overview with statistics
+### Pages Overview
+- **Landing**: Welcome page with authentication
+- **Dashboard**: Mission overview with ping statistics
 - **Send Ping**: Create new transmissions with coordinates
-- **All Pings**: View all transmissions with security indicators
-- **Mission Trails**: Interactive trail visualization and extension
-- **Security Center**: Real-time security monitoring and audit logs
+- **All Pings**: View all transmissions with details
+- **Mission Trails**: Interactive trail visualization and management
 
-### Advanced Features
-- **Trail Networks**: Create branching response chains
-- **Visual Security**: Classification indicators for all transmissions  
+### Key Features
+- **Trail Networks**: Visual representation of ping response chains
 - **Real-time Updates**: Live data synchronization
-- **Responsive Design**: Mobile and desktop optimized
-- **3D Backgrounds**: Immersive Three.js animations
+- **Mobile Responsive**: Optimized for all device sizes
+- **3D Backgrounds**: Immersive particle and animation effects
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/new-mission`)
-3. Commit changes (`git commit -m 'Add new mission capability'`)
-4. Push to branch (`git push origin feature/new-mission`)
+2. Create feature branch (`git checkout -b feature/ping-enhancement`)
+3. Commit changes (`git commit -m 'Add ping trail visualization'`)
+4. Push to branch (`git push origin feature/ping-enhancement`)
 5. Create Pull Request
 
 ## 📄 License
 
-This project is classified under MI6 security protocols. Unauthorized access is prohibited.
+This project is classified under intelligence security protocols.
 
 ---
 

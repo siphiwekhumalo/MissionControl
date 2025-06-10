@@ -41,7 +41,7 @@ function Router() {
           <Route path="/send-ping" component={SendPing} />
           <Route path="/all-pings" component={AllPings} />
           <Route path="/trails" component={TrailView} />
-          <Route path="/security" component={SecurityDashboard} />
+
           <Route component={NotFound} />
         </>
       ) : (
