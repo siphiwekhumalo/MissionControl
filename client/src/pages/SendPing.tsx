@@ -81,7 +81,7 @@ export default function SendPing() {
 
   const sendPingMutation = useMutation({
     mutationFn: async (data: { latitude: string; longitude: string; message?: string }) => {
-      if (pingType === "response" && latestPings && latestPings.length > 0) {
+      if (pingType === "response" && Array.isArray(latestPings) && latestPings.length > 0) {
         // Use the latest ping as the parent for response
         const latestPingId = latestPings[0].id;
         return await apiRequest("POST", "/api/pings", {
