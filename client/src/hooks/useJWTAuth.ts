@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { universalFetch } from "@/lib/environmentConfig";
+import { emergencyApiCall } from "@/lib/forceApiConfig";
 
 interface User {
   id: number;
@@ -43,7 +43,7 @@ export function useJWTAuth() {
       const token = localStorage.getItem("token");
       if (!token) return null;
 
-      const response = await universalFetch("/api/user", {
+      const response = await emergencyApiCall("/api/user", {
         headers: {
           ...getAuthHeaders(),
         },
@@ -69,7 +69,7 @@ export function useJWTAuth() {
     mutationFn: async (credentials: LoginData): Promise<AuthResponse> => {
       console.log("Starting login with:", credentials);
       
-      const response = await universalFetch("/api/login", {
+      const response = await emergencyApiCall("/api/login", {
         method: "POST",
         body: JSON.stringify(credentials),
       });
@@ -114,7 +114,7 @@ export function useJWTAuth() {
     mutationFn: async (credentials: RegisterData): Promise<AuthResponse> => {
       console.log("Starting registration with:", credentials);
       
-      const response = await universalFetch("/api/register", {
+      const response = await emergencyApiCall("/api/register", {
         method: "POST",
         body: JSON.stringify(credentials),
       });

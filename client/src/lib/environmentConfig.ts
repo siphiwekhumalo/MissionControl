@@ -42,18 +42,34 @@ function detectEnvironment(): EnvironmentConfig {
 
 export const ENV = detectEnvironment();
 
+// EMERGENCY FIX: Force correct domain detection
+function getCorrectApiUrl(endpoint: string): string {
+  if (typeof window === 'undefined') return endpoint;
+  
+  // Force detection of current domain
+  const currentHost = window.location.host;
+  const protocol = window.location.protocol;
+  
+  // If we detect localhost in any form, force use of current domain
+  const isReplitDomain = currentHost.includes('replit.dev') || 
+                        currentHost.includes('replit.app') ||
+                        currentHost.includes('spock.replit');
+  
+  if (isReplitDomain) {
+    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    return `${protocol}//${currentHost}${normalizedEndpoint}`;
+  }
+  
+  // Fallback for local development
+  return endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+}
+
 // Universal API call function that works in all environments
 export async function universalFetch(endpoint: string, options: RequestInit = {}): Promise<Response> {
-  // Ensure endpoint starts with /
-  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const fullUrl = getCorrectApiUrl(endpoint);
   
-  // Force absolute URL using current domain to prevent localhost issues
-  const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
-  const fullUrl = `${currentOrigin}${normalizedEndpoint}`;
+  console.log(`API: ${options.method || 'GET'} ${fullUrl} [FORCED-DOMAIN-v4]`);
   
-  console.log(`API: ${options.method || 'GET'} ${fullUrl} [Cache-Busted-v3]`);
-  
-  // Use absolute URL with current domain
   return fetch(fullUrl, {
     ...options,
     credentials: 'same-origin',
