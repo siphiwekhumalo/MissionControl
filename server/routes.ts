@@ -130,7 +130,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const ping = await storage.createPing({
-        ...validation.data,
+        latitude: validation.data.latitude,
+        longitude: validation.data.longitude,
+        message: validation.data.message,
+        parentPingId: validation.data.parentPingId,
         userId: req.userId!,
       });
 
@@ -208,7 +211,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const ping = await storage.respondToPing(pingId, {
-        ...validation.data,
+        latitude: validation.data.latitude,
+        longitude: validation.data.longitude,
+        message: validation.data.message,
+        parentPingId: validation.data.parentPingId,
         userId: req.userId!,
       });
 
