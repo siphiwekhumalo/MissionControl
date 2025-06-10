@@ -19,18 +19,26 @@ function detectEnvironment(): EnvironmentConfig {
 
   const { hostname, protocol, port } = window.location;
   
-  // More robust Replit detection
+  // Detect local development
+  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+  
+  // Detect Replit environment
   const isReplit = hostname.includes('replit.dev') || 
                    hostname.includes('replit.app') || 
                    hostname.includes('replit.') ||
                    hostname.includes('spock.replit.dev');
   
-  const isLocal = !isReplit && (hostname === 'localhost' || hostname === '127.0.0.1');
-  const isDevelopment = !isReplit && isLocal;
+  const isDevelopment = isLocal;
 
-  // Always use relative URLs for API calls
-  // This ensures same-origin requests that work in both environments
-  const apiBaseUrl = '';
+  // Set API base URL based on environment
+  let apiBaseUrl = '';
+  if (isLocal) {
+    // For local development, use localhost:5000
+    apiBaseUrl = 'http://localhost:5000';
+  } else if (isReplit) {
+    // For Replit, use relative URLs (same origin)
+    apiBaseUrl = '';
+  }
 
   return {
     apiBaseUrl,
@@ -42,37 +50,16 @@ function detectEnvironment(): EnvironmentConfig {
 
 export const ENV = detectEnvironment();
 
-// EMERGENCY FIX: Force correct domain detection
-function getCorrectApiUrl(endpoint: string): string {
-  if (typeof window === 'undefined') return endpoint;
-  
-  // Force detection of current domain
-  const currentHost = window.location.host;
-  const protocol = window.location.protocol;
-  
-  // If we detect localhost in any form, force use of current domain
-  const isReplitDomain = currentHost.includes('replit.dev') || 
-                        currentHost.includes('replit.app') ||
-                        currentHost.includes('spock.replit');
-  
-  if (isReplitDomain) {
-    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    return `${protocol}//${currentHost}${normalizedEndpoint}`;
-  }
-  
-  // Fallback for local development
-  return endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-}
-
 // Universal API call function that works in all environments
 export async function universalFetch(endpoint: string, options: RequestInit = {}): Promise<Response> {
-  const fullUrl = getCorrectApiUrl(endpoint);
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const fullUrl = `${ENV.apiBaseUrl}${normalizedEndpoint}`;
   
-  console.log(`API: ${options.method || 'GET'} ${fullUrl} [FORCED-DOMAIN-v4]`);
+  console.log(`API: ${options.method || 'GET'} ${fullUrl} [ENV: ${ENV.isLocal ? 'local' : ENV.isReplit ? 'replit' : 'unknown'}]`);
   
   return fetch(fullUrl, {
     ...options,
-    credentials: 'same-origin',
+    credentials: ENV.isLocal ? 'include' : 'same-origin',
     cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
