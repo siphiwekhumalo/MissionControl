@@ -23,7 +23,7 @@ npm install
 
 **Windows Command Prompt:**
 ```cmd
-start-local-dev.bat
+dev.bat
 ```
 
 **Windows PowerShell:**
