@@ -29,6 +29,9 @@ export default function TrailView() {
   const [selectedPingId, setSelectedPingId] = useState<number | null>(null);
   const [responseMessage, setResponseMessage] = useState("");
   const [newCoordinates, setNewCoordinates] = useState({ lat: "", lng: "" });
+  const [trailFilter, setTrailFilter] = useState<"all" | "active" | "recent">("all");
+  const [expandedTrails, setExpandedTrails] = useState<Set<number>>(new Set());
+  const [isGeneratingCoords, setIsGeneratingCoords] = useState(false);
 
   // Redirect to auth if not authenticated
   useEffect(() => {

@@ -39,7 +39,7 @@ export default function AppHeader() {
                 </div>
               </div>
               <div>
-                <h1 className="bond-title text-lg font-light text-white">QUANTUM</h1>
+                <h1 className="bond-title text-lg font-light text-white">MISSION CONTROL</h1>
                 <p className="text-xs text-mission-silver -mt-1">MI6 Network</p>
               </div>
             </div>
